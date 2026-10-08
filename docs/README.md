@@ -113,13 +113,17 @@ Al finalizar el proyecto se espera contar con una aplicación web funcional en l
 
 ## 4. Diseño inicial
 
-### Página de inicio / inicio de sesión
+### Página de inicio
+![Boceto pagina de inicio](./pagina_principal.png)
+
+### Inicio de sesión / registro
+![Boceto inicio de sesion](./inicio_sesion.png)
 
 ### Página de Matches
+![Boceto pagina de matches](./matches.png)
 
 ### Página de Chats
-
-### Identidad visual
+![Boceto pagina de chats](./chats.png)
 
 ---
 
