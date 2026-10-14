@@ -32,7 +32,11 @@ export default function LoginPage() {
                 } else if (data === -1) {
                     setError("Ha ocurrido un error, intente denuevo más tarde.");
                 } else {
-                    router.replace(`/matches?user=${user}`);
+                    if (user === "usuario") {
+                        router.replace("/matches");
+                    } else {
+                        router.replace("/mascotas");
+                    }
                 }
             });
     }
