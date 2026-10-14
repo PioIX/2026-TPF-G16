@@ -58,7 +58,7 @@ app.post('/login', async function(req, res) {
     }
 })
 
-//registro
+//registro usuario
 app.post('/registerUser', async function(req, res) {
     try {
         console.log(req.body) ;
@@ -81,6 +81,7 @@ app.post('/registerUser', async function(req, res) {
     }
 })
 
+// registro refugio
 app.post('/registerRef', async function(req, res) {
     try {
         console.log(req.body) ;
@@ -102,3 +103,28 @@ app.post('/registerRef', async function(req, res) {
         res.send(-1);
     }
 })
+
+// registro mascota
+app.post('/registerPet', async function(req, res) {
+    try {
+        console.log(req.body) ;
+        let existe = await realizarQuery(`SELECT * FROM Mascotas WHERE nombre = "${req.body.nombre}" AND id_refugio = ${req.session.id_refugio}`) ;
+        if (existe.length > 0) {
+            res.send(0);
+        } else {
+            realizarQuery(`
+                INSERT INTO Mascotas (nombre, especie, raza, edad, sexo, desc, foto) VALUES
+                ("${req.body.nombre}", "${req.body.especie}", "${req.body.raza}", ${req.body.edad}, "${req.body.sexo}", "${req.body.desc}", "${req.body.foto}");
+            `);
+            let id = await realizarQuery(`SELECT LAST_INSERT_ID()`);
+            res.json(id[0]);
+        }
+    } catch (error) {
+        res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
+        res.send(-1);
+    }
+})
+
+// cargar caracteristicas
+
+// registro caracteristicas

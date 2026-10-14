@@ -21,7 +21,7 @@ export default function Registro() {
 
         datos.append("nombre", nombre);
         datos.append("mail", mail);
-        datos.append("contrasena", password);
+        datos.append("password", password);
         datos.append("foto", foto);
         datos.append("direccion", direccion);
         datos.append("telefono", telefono);
