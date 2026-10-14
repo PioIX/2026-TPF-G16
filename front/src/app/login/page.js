@@ -11,13 +11,14 @@ export default function LoginPage() {
 
     const [mail, setMail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const router = useRouter();
 
     const iniciarSesion = () => {
-        const datos = {user: user, mail: mail, contrasena: password};
+        const datos = {tipoUser: user, mail: mail, password: password};
 
-        fetch('http://localhost:3001/login', {
+        fetch('http://localhost:4000/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -27,17 +28,21 @@ export default function LoginPage() {
             .then(response => response.json())
             .then(data => {
                 if (data === 0){
-                    return(
-                        <p>Mail o contraseña incorrectos, intenta denuevo.</p>
-                    )
+                    setError("Mail o contraseña incorrectos, intenta denuevo.");
                 } else if (data === -1) {
-                    return(
-                        <p>A ocurrido un error, intente denuevo más tarde.</p>
-                    )
+                    setError("Ha ocurrido un error, intente denuevo más tarde.");
                 } else {
-                    router.replace("/matches?user=");
+                    router.replace(`/matches?user=${user}`);
                 }
             });
+    }
+
+    const irRegistro = () => {
+        if (user === "usuario") {
+            router.push("/registroUser");
+        } else {
+            router.push("/registroRef");
+        }
     }
 
     return(
@@ -59,10 +64,11 @@ export default function LoginPage() {
                     <Input type={"email"} text={"Correo electrónico"} placeholder={"ejemplo@gmail.com"} change={setMail}></Input>
                     <Input type={"password"} text={"Contraseña"} placeholder={"Ingresa tu contraseña"} change={setPassword}></Input>
                     <Button text={"Iniciar sesión"} funcion={iniciarSesion}></Button>
+                    {error && (<p>{error}</p>)}
                 </div>
                 <div>
                     <p>¿No tenés una cuenta?</p>
-                    <a href="/registro">Registrate aquí</a>
+                    <Button text={"Registrate aquí"} funcion={irRegistro}></Button>
                 </div>
             </div>
         </main>
