@@ -3,6 +3,7 @@
 import Input from "@/components/Input";
 import Button from "@/components/Button";
 import Select from "@/components/Select";
+import Checkbox from "@/components/Checkbox";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Popup from "reactjs-popup";
@@ -16,10 +17,12 @@ export default function MascotasPage() {
     const [sexo, setSexo] = useState("");
     const [descripcion, setDescripcion] = useState("");
     const [foto, setFoto] = useState(null);
-    const [caracPet, setCaracPet] = useState([]);
+    const [carMascota, setCarMascota] = useState([]);
     
     const [caracteristicas, setCaracteristicas] = useState([]);
     const [error, setError] = useState("");
+    const [confirmacion, setConfirmacion] = useState(false);
+    const [errorCierre, setErrorCierre] = useState("");
 
     const router = useRouter();
 
@@ -28,9 +31,19 @@ export default function MascotasPage() {
             .then(response => response.json())
             .then(data => setCaracteristicas(data));
     }
+    cargarCaracteristicas();
+
+    const cambiarCaracteristicas = (bool, id_car) => {
+        if (bool) {
+            setCarMascota([...carMascota, id_car]);
+        } else {
+            if (carMascota.includes(id_car)) {
+                setCarMascota(carMascota.filter(id => id !== id_car));
+            }
+        }
+    }
 
     const mascotaNueva = () => {
-        // primero guardar las caracteristicas
         const datos = new FormData();
 
         datos.append("nombre", nombre);
@@ -52,12 +65,28 @@ export default function MascotasPage() {
                 } else if (data === -1) {
                     setError("Ha ocurrido un error, intente denuevo más tarde.");
                 } else {
-                    guardarCaracteristicas();
+                    guardarCaracteristicas(data);
                 }
             });
     }
 
-    const guardarCaracteristicas = () => {}
+    const guardarCaracteristicas = (id_pet) => {}
+
+    const confirmar = () => {
+        setConfirmacion(true);
+    }
+
+    const cerrarSesion = () => {
+        fetch('http://localhost:4000/cierreSesion')
+            .then(response => response.json())
+            .then(data => {
+                if (data === 0) {
+                    router.replace('/');
+                } else {
+                    setErrorCierre("Ha ocurrido un error, intente denuevo más tarde.");
+                }
+            });
+    }
 
     return (
         <main>
@@ -77,7 +106,15 @@ export default function MascotasPage() {
                         <h1>Tus mascotas</h1>
                         <p>Visualiza las mascotas ingresadas</p>
                     </div>
-                    <Button text={"Cerrar sesión"} funcion={cerrarSesion}></Button>
+                    <Button text={"Cerrar sesión"} funcion={confirmar}></Button>
+                    {confirmacion && (
+                        <div>
+                            <p>¿Estás seguro de que quieres cerrar sesión?</p>
+                            <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
+                            <Button text={"Volver"} funcion={() => {setConfirmacion(false)}}></Button>
+                        </div>
+                    )}
+                    {errorCierre && (<p>{errorCierre}</p>)}
                 </div>
                 <div>
                     <h2>Lista Mascotas</h2>
@@ -98,10 +135,11 @@ export default function MascotasPage() {
                             <Input type={"file"} text={"Foto"} placeholder={"Ingrese una foto de su amiguito"} change={setFoto}></Input>
                             <div>
                                 <label>Caracteristicas</label>
-                                {caracteristicas.map(car => {
+                                {caracteristicas.map(car => (
                                     <div>
+                                        <Checkbox id_car={car.id_caracteristica} text={car.descripcion} change={cambiarCaracteristicas}></Checkbox>
                                     </div>
-                                })}
+                                ))}
                             </div>
                             <Button text={"Registrar mascota"} funcion={mascotaNueva}></Button>
                         </div>
