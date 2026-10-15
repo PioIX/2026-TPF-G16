@@ -104,6 +104,23 @@ app.post('/registerRef', async function(req, res) {
     }
 })
 
+// cerrar sesion
+app.get('/cierreSesion', async function(req, res) {
+    try {
+        console.log(req.body) ;
+        if (req.session.tipo === "usuario") {
+            delete req.session.id_usuario;
+        } else {
+            delete req.session.id_refugio;
+        }
+        delete req.session.tipo;
+        res.send(0);
+    } catch (error) {
+        res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
+        res.send(-1);
+    }
+})
+
 // registro mascota
 app.post('/registerPet', async function(req, res) {
     try {
@@ -126,5 +143,20 @@ app.post('/registerPet', async function(req, res) {
 })
 
 // cargar caracteristicas
+app.post('/registerPet', async function(req, res) {
+    try {
+        console.log(req.body) ;
+        const caracteristicas = car;
+        for (const caracteristica of caracteristicas) {
+            realizarQuery(`
+                INSERT INTO MascotasxCaracteristicas (id_mascota, id_caracteristica) VALUES
+                (${req.body.id_pet}, ${caracteristica});
+            `);
+        }
+    } catch (error) {
+        res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
+        res.send(-1);
+    }
+})
 
 // registro caracteristicas

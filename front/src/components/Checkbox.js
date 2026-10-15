@@ -1,8 +1,16 @@
-export default function Checkbox({ idCar, text }) {
+export default function Checkbox({ id_car, text, change }) {
+    const manejarCambio = (e) => {
+        if (e.target.checked) {
+            change(true, id_car);
+        } else {
+            change(false, id_car);
+        }
+    }
+
     return(
-        <div>
-            <input type="checkbox" id={idCar}></input>
-            <label for={idCar}>{text}</label>
-        </div>
+        <label>
+            <input type="checkbox" onChange={(e) => {manejarCambio(e)}}></input>
+            {text}
+        </label>
     )
 }
