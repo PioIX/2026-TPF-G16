@@ -143,10 +143,21 @@ app.post('/registerPet', async function(req, res) {
 })
 
 // cargar caracteristicas
-app.post('/registerPet', async function(req, res) {
+app.get('/caracteristicas', async function(req, res) {
+    try {
+        let respuesta = await realizarQuery(`SELECT * FROM Caracteristicas`);
+        res.json(respuesta);
+    } catch (error) {
+        res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
+    }
+})
+
+
+// registro caracteristicas
+app.post('/registerCar', async function(req, res) {
     try {
         console.log(req.body) ;
-        const caracteristicas = car;
+        const caracteristicas = req.body.car;
         for (const caracteristica of caracteristicas) {
             realizarQuery(`
                 INSERT INTO MascotasxCaracteristicas (id_mascota, id_caracteristica) VALUES
@@ -158,5 +169,3 @@ app.post('/registerPet', async function(req, res) {
         res.send(-1);
     }
 })
-
-// registro caracteristicas

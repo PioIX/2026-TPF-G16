@@ -10,6 +10,8 @@ import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 
 export default function MascotasPage() {
+    const [mascota, setMascota] = useState("");
+
     const [nombre, setNombre] = useState("");
     const [especie, setEspecie] = useState("");
     const [raza, setRaza] = useState("");
@@ -26,16 +28,20 @@ export default function MascotasPage() {
 
     const router = useRouter();
 
+    const cargarMascotas = () => {}
+
     const cargarCaracteristicas = () => {
-        fetch('http://localhost:4000/getCaracteristicas')
+        fetch('http://localhost:4000/caracteristicas')
             .then(response => response.json())
-            .then(data => setCaracteristicas(data));
+            .then(data => setCaracteristicas(data))
     }
     cargarCaracteristicas();
 
     const cambiarCaracteristicas = (bool, id_car) => {
         if (bool) {
-            setCarMascota([...carMascota, id_car]);
+            if (!carMascota.includes(id_car)) {
+                setCarMascota([...carMascota, id_car]);
+            }
         } else {
             if (carMascota.includes(id_car)) {
                 setCarMascota(carMascota.filter(id => id !== id_car));
@@ -70,7 +76,21 @@ export default function MascotasPage() {
             });
     }
 
-    const guardarCaracteristicas = (id_pet) => {}
+    const guardarCaracteristicas = (id_pet) => {
+        const datos = {id_pet: id_pet, car: carMascota};
+        fetch('http://localhost:4000/registerCar', {
+            method: 'POST',
+            body: datos
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data === -1) {
+                    setError("Ha ocurrido un error, intente denuevo más tarde.");
+                } else {
+                    cargarMascotas();
+                }
+            });
+    }
 
     const confirmar = () => {
         setConfirmacion(true);
@@ -137,11 +157,12 @@ export default function MascotasPage() {
                                 <label>Caracteristicas</label>
                                 {caracteristicas.map(car => (
                                     <div>
-                                        <Checkbox id_car={car.id_caracteristica} text={car.descripcion} change={cambiarCaracteristicas}></Checkbox>
+                                        <Checkbox id={car.id_caracteristica} text={car.descripcion} change={cambiarCaracteristicas}></Checkbox>
                                     </div>
                                 ))}
                             </div>
                             <Button text={"Registrar mascota"} funcion={mascotaNueva}></Button>
+                            {error && (<p>{error}</p>)}
                         </div>
                     </Popup>
                 </div>
