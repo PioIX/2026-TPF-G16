@@ -57,7 +57,6 @@ app.post('/login', async function(req, res) {
         res.send(-1);
     }
 })
-
 //registro usuario
 app.post('/registerUser', async function(req, res) {
     try {
@@ -80,7 +79,6 @@ app.post('/registerUser', async function(req, res) {
         res.send(-1);
     }
 })
-
 // registro refugio
 app.post('/registerRef', async function(req, res) {
     try {
@@ -103,7 +101,6 @@ app.post('/registerRef', async function(req, res) {
         res.send(-1);
     }
 })
-
 // cerrar sesion
 app.get('/cierreSesion', async function(req, res) {
     try {
@@ -121,6 +118,20 @@ app.get('/cierreSesion', async function(req, res) {
     }
 })
 
+// cargar mascotas
+app.get('/mascotas', async function(req, res) {
+    try {
+        let respuesta;
+        if (req.session.id_refugio) {
+            respuesta = await realizarQuery(`SELECT * FROM Mascotas WHERE id_refugio = ${req.session.id_refugio}`);
+        } else {
+            respuesta = await realizarQuery(`SELECT Mascotas.nombre, especie, raza, edad, sexo, descripcion, foto, Refugios.nombre AS nombre_refugio FROM Mascotas INNER JOIN Refugios ON Mascotas.id_refugio = Refugios.id_refugio`);
+        }
+        res.json(respuesta);
+    } catch (error) {
+        res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
+    }
+})
 // registro mascota
 app.post('/registerPet', async function(req, res) {
     try {
@@ -151,8 +162,6 @@ app.get('/caracteristicas', async function(req, res) {
         res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
     }
 })
-
-
 // registro caracteristicas
 app.post('/registerCar', async function(req, res) {
     try {

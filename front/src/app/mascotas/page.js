@@ -10,7 +10,7 @@ import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 
 export default function MascotasPage() {
-    const [mascota, setMascota] = useState("");
+    const [mascotas, setMascotas] = useState("");
 
     const [nombre, setNombre] = useState("");
     const [especie, setEspecie] = useState("");
@@ -28,7 +28,12 @@ export default function MascotasPage() {
 
     const router = useRouter();
 
-    const cargarMascotas = () => {}
+    const cargarMascotas = () => {
+        fetch('http://localhost:4000/mascotas')
+            .then(response => response.json())
+            .then(data => setMascotas(data))
+    }
+    cargarMascotas();
 
     const cargarCaracteristicas = () => {
         fetch('http://localhost:4000/caracteristicas')
@@ -137,7 +142,42 @@ export default function MascotasPage() {
                     {errorCierre && (<p>{errorCierre}</p>)}
                 </div>
                 <div>
-                    <h2>Lista Mascotas</h2>
+                    <h2>Mascotas</h2>
+                    {mascotas.map(pet => (
+                        <div>
+                            <img></img>
+                            <div>
+                                <h3>{pet.nombre}</h3>
+                                <div>
+                                    <img></img>
+                                    <p>{pet.especie} - {pet.raza}</p>
+                                </div>
+                                <div>
+                                    <div>
+                                        <img></img>
+                                        <p>{pet.edad} años</p>
+                                    </div>
+                                    {pet.sexo === "F" ? (
+                                        <div>
+                                            <img></img>
+                                            <p>Hembra</p>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <img></img>
+                                            <p>Macho</p>
+                                        </div>
+                                    )}
+                                    <p>{pet.descripcion}</p>
+                                    <div>
+                                        <h4>Caracteristicas</h4>
+                                        <div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
                 <div>
                     <Popup trigger={<Button text={"Nueva mascota"}></Button>}>
