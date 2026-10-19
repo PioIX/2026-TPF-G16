@@ -125,7 +125,7 @@ app.get('/mascotas', async function(req, res) {
         if (req.session.id_refugio) {
             respuesta = await realizarQuery(`SELECT * FROM Mascotas WHERE id_refugio = ${req.session.id_refugio}`);
         } else {
-            respuesta = await realizarQuery(`SELECT Mascotas.nombre, especie, raza, edad, sexo, descripcion, foto, Refugios.nombre AS nombre_refugio FROM Mascotas INNER JOIN Refugios ON Mascotas.id_refugio = Refugios.id_refugio`);
+            respuesta = await realizarQuery(`SELECT id_mascota, Mascotas.nombre, especie, raza, edad, sexo, descripcion, foto, Refugios.nombre AS nombre_refugio FROM Mascotas INNER JOIN Refugios ON Mascotas.id_refugio = Refugios.id_refugio`);
         }
         res.json(respuesta);
     } catch (error) {
@@ -160,6 +160,24 @@ app.get('/caracteristicas', async function(req, res) {
         res.json(respuesta);
     } catch (error) {
         res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
+    }
+})
+// cargar caracteristicas por mascota
+app.post('/carPorMascota', async function(req, res) {
+    try {
+        console.log(req.body);
+        let respuesta = [];
+        let pets = req.body.mascotas;
+        pets.forEach (async pet => {
+            let rta = await realizarQuery(`SELECT id_mascota, id_caracteristica, Caracteristicas.descripcion FROM Caracteristicas INNER JOIN MascotasxCaracteristicas ON Caracteristicas.id_caracteristica = Mascotas.id_caracteristica WHERE id_mascota = ${pet.id_mascota}`);
+            rta.forEach(registro => {
+                respuesta.push(registro);
+            })
+        })
+        res.json(respuesta);
+    } catch (error) {
+        res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
+        res.send(-1);
     }
 })
 // registro caracteristicas

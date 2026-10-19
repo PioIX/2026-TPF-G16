@@ -4,13 +4,14 @@ import Input from "@/components/Input";
 import Button from "@/components/Button";
 import Select from "@/components/Select";
 import Checkbox from "@/components/Checkbox";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 
 export default function MascotasPage() {
-    const [mascotas, setMascotas] = useState("");
+    const [mascotas, setMascotas] = useState([]);
+    const [carPorMascota, setCarPorMascota] = useState([]);
 
     const [nombre, setNombre] = useState("");
     const [especie, setEspecie] = useState("");
@@ -31,16 +32,35 @@ export default function MascotasPage() {
     const cargarMascotas = () => {
         fetch('http://localhost:4000/mascotas')
             .then(response => response.json())
-            .then(data => setMascotas(data))
+            .then(data => {
+                setMascotas(data);
+                cargarCarPorMascota();
+            })
     }
-    cargarMascotas();
-
+    const cargarCarPorMascota = () => {
+        let datos = {mascotas: mascotas};
+        fetch('http://localhost:4000/carPorMascota', {
+            method: 'POST',
+            body: datos
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data === -1) {
+                    setError("Ha ocurrido un error, intente denuevo más tarde.");
+                } else {
+                    setCarPorMascota(data);
+                }
+            });
+    }
     const cargarCaracteristicas = () => {
         fetch('http://localhost:4000/caracteristicas')
             .then(response => response.json())
             .then(data => setCaracteristicas(data))
     }
-    cargarCaracteristicas();
+    useEffect(() => {
+        cargarMascotas();
+        cargarCaracteristicas();
+    }, []);
 
     const cambiarCaracteristicas = (bool, id_car) => {
         if (bool) {
@@ -80,7 +100,6 @@ export default function MascotasPage() {
                 }
             });
     }
-
     const guardarCaracteristicas = (id_pet) => {
         const datos = {id_pet: id_pet, car: carMascota};
         fetch('http://localhost:4000/registerCar', {
@@ -95,10 +114,6 @@ export default function MascotasPage() {
                     cargarMascotas();
                 }
             });
-    }
-
-    const confirmar = () => {
-        setConfirmacion(true);
     }
 
     const cerrarSesion = () => {
@@ -121,8 +136,8 @@ export default function MascotasPage() {
                     <h2>PetMatch</h2>
                 </div>
                 <div>
-                    <Button text={"Mascotas"} funcion={() => {router.push("/matches")}}></Button>
-                    <Button text={"Chats"} funcion={() => {router.push("/matches")}}></Button>
+                    <Button text={"Mascotas"} funcion={() => {router.push("/mascotas")}}></Button>
+                    <Button text={"Chats"} funcion={() => {router.push("/chats")}}></Button>
                 </div>
             </div>
             <div>
@@ -131,7 +146,7 @@ export default function MascotasPage() {
                         <h1>Tus mascotas</h1>
                         <p>Visualiza las mascotas ingresadas</p>
                     </div>
-                    <Button text={"Cerrar sesión"} funcion={confirmar}></Button>
+                    <Button text={"Cerrar sesión"} funcion={() => {setConfirmacion(true)}}></Button>
                     {confirmacion && (
                         <div>
                             <p>¿Estás seguro de que quieres cerrar sesión?</p>
@@ -145,7 +160,7 @@ export default function MascotasPage() {
                     <h2>Mascotas</h2>
                     {mascotas.map(pet => (
                         <div>
-                            <img></img>
+                            <img src={pet.foto} alt="Foto mascota"></img>
                             <div>
                                 <h3>{pet.nombre}</h3>
                                 <div>
@@ -171,8 +186,11 @@ export default function MascotasPage() {
                                     <p>{pet.descripcion}</p>
                                     <div>
                                         <h4>Caracteristicas</h4>
-                                        <div>
-                                        </div>
+                                        <ul>
+                                            {carPorMascota.filter(car => car.id_mascota === pet.id_mascota).map(car => (
+                                                <li key={car.id_caracteristica}>{car.descripcion}</li>
+                                            ))}
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
