@@ -1,16 +1,26 @@
 "use client"
 
 import Button from "@/components/Button";
+import Input from "@/components/Input";
+import Select from "@/components/Select";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function MatchesPage() {
     const [mascotas, setMascotas] = useState([]);
+    const [mascotasFiltradas, setMascotasFiltradas] = useState([])
     const [carPorMascota, setCarPorMascota] = useState([]);
     const [mascotaElegida, setMascotaElegida] = useState(null);
 
     const [confirmacion, setConfirmacion] = useState(false);
     const [errorCierre, setErrorCierre] = useState("");
+
+    const [especie, setEspecie] = useState("");
+    const [raza, setRaza] = useState("");
+    const [edadMax, setEdadMax] = useState(null);
+    const [edadMin, setEdadMin] = useState(null);
+    const [sexo, setSexo] = useState("");
+    const [caracteristica, setCaracteristica] = useState("");
 
     const router = useRouter();
 
@@ -45,6 +55,12 @@ export default function MatchesPage() {
     useEffect(() => {
         cargarMascotas();
     }, []);
+
+    useEffect(() => {
+        mascotasFiltradas = mascotas.filter(pet => pet.especie === especie);
+        mascotasFiltradas = mascotasFiltradas.filter(pet => pet.raza === raza);
+        mascotasFiltradas = mascotasFiltradas.filter(pet => pet.edad <=)
+    }, [especie, raza, edadMax, edadMin, sexo, caracteristica])
 
     const cerrarSesion = () => {
         fetch('http://localhost:4000/cierreSesion')
@@ -88,6 +104,11 @@ export default function MatchesPage() {
                 </div>
                 <div>
                     <h4>Filtros</h4>
+                    <Select text={"Especie"} change={setEspecie} options={["Perro", "Gato", "Pajaro", "Conejo"]}></Select>
+                    <Input type={"text"} text={"Raza"} placeholder={"Ingrese la raza"} change={setRaza}></Input>
+                    <Input type={"number"} text={"Edad máxima"} placeholder={"Ingrese la edad máxima"} change={setEdadMax}></Input>
+                    <Input type={"number"} text={"Edad mínima"} placeholder={"Ingrese la edad mínima"} change={setEdadMin}></Input>
+                    <Select text={"Sexo"} change={setSexo} options={["F", "M"]}></Select>
                 </div>
                 <div>
                     <img src={mascotaElegida.foto} alt="Foto mascota"></img>
