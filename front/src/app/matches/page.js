@@ -5,10 +5,11 @@ import Input from "@/components/Input";
 import Select from "@/components/Select";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import eslintConfig from "../../../eslint.config.mjs";
 
 export default function MatchesPage() {
     const [mascotas, setMascotas] = useState([]);
-    const [mascotasFiltradas, setMascotasFiltradas] = useState([])
+    const [mascotasFiltradas, setMascotasFiltradas] = useState([]);
     const [carPorMascota, setCarPorMascota] = useState([]);
     const [mascotaElegida, setMascotaElegida] = useState(null);
 
@@ -29,6 +30,7 @@ export default function MatchesPage() {
             .then(response => response.json())
             .then(data => {
                 setMascotas(data);
+                setMascotasFiltradas(data);
                 cargarCarPorMascota();
                 cargarMascotaRandom();
             })
@@ -49,17 +51,35 @@ export default function MatchesPage() {
             });
     }
     const cargarMascotaRandom = () => {
-        let indice = Math.floor(Math.random() * mascotas.length);
-        setMascotaElegida(mascotas[indice]);
+        let indice = Math.floor(Math.random() * mascotasFiltradas.length);
+        setMascotaElegida(mascotasFiltradas[indice]);
     }
     useEffect(() => {
         cargarMascotas();
     }, []);
 
     useEffect(() => {
-        mascotasFiltradas = mascotas.filter(pet => pet.especie === especie);
-        mascotasFiltradas = mascotasFiltradas.filter(pet => pet.raza === raza);
-        mascotasFiltradas = mascotasFiltradas.filter(pet => pet.edad <=)
+        console.log(especie, raza, edadMax, edadMin, sexo, caracteristica)
+        if (especie) {
+            setMascotasFiltradas(mascotas.filter(pet => pet.especie === especie));
+        } else {
+            setMascotasFiltradas(mascotas);
+        }
+        if (raza) {
+            setMascotasFiltradas(mascotasFiltradas.filter(pet => pet.raza === raza));
+        }
+        if (edadMax) {
+          setMascotasFiltradas(mascotasFiltradas.filter(pet => pet.edad <= Number(edadMax)));  
+        }
+        if (edadMin) {
+            setMascotasFiltradas(mascotasFiltradas.filter(pet => pet.edad >= Number(edadMin)));
+        }
+        if (sexo) {
+            setMascotasFiltradas(mascotasFiltradas.filter(pet => pet.sexo === sexo));
+        }
+        if (!mascotasFiltradas.includes(mascotaElegida)) {
+            cargarMascotaRandom();
+        };
     }, [especie, raza, edadMax, edadMin, sexo, caracteristica])
 
     const cerrarSesion = () => {
