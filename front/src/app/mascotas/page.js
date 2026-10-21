@@ -205,7 +205,7 @@ export default function MascotasPage() {
                         </div>
                         <div>
                             <Input type={"text"} text={"Nombre"} placeholder={"Ingrese su nombre"} change={setNombre}></Input>
-                            <Select text={"Tipo"} change={setEspecie} options={["Perro", "Gato", "Pajaro", "Conejo"]}></Select>
+                            <Select text={"Especie"} change={setEspecie} options={["Perro", "Gato", "Pajaro", "Conejo"]}></Select>
                             <Input type={"text"} text={"Raza"} placeholder={"Ingrese su raza/especie"} change={setRaza}></Input>
                             <Input type={"number"} text={"Edad"} placeholder={"Ingrese su edad"} change={setEdad}></Input>
                             <Select text={"Sexo"} change={setSexo} options={["F", "M"]}></Select>
