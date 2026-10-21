@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 export default function MatchesPage() {
     const [mascotas, setMascotas] = useState([]);
+    const [carPorMascota, setCarPorMascota] = useState([]);
     const [mascotaElegida, setMascotaElegida] = useState(null);
 
     const [confirmacion, setConfirmacion] = useState(false);
@@ -18,8 +19,24 @@ export default function MatchesPage() {
             .then(response => response.json())
             .then(data => {
                 setMascotas(data);
+                cargarCarPorMascota();
                 cargarMascotaRandom();
             })
+    }
+    const cargarCarPorMascota = () => {
+        let datos = {mascotas: mascotas};
+        fetch('http://localhost:4000/carPorMascota', {
+            method: 'POST',
+            body: datos
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data === -1) {
+                    setError("Ha ocurrido un error, intente denuevo más tarde.");
+                } else {
+                    setCarPorMascota(data);
+                }
+            });
     }
     const cargarMascotaRandom = () => {
         let indice = Math.floor(Math.random() * mascotas.length);
@@ -99,8 +116,11 @@ export default function MatchesPage() {
                             <p>{mascotaElegida.descripcion}</p>
                             <div>
                                 <h4>Caracteristicas</h4>
-                                <div>
-                                </div>
+                                <ul>
+                                    {carPorMascota.filter(car => car.id_mascota === mascotaElegida.id_mascota).map(car => (
+                                        <li key={car.id_caracteristica}>{car.descripcion}</li>
+                                    ))}
+                                </ul>
                             </div>
                             <p>{mascotaElegida.nombre_refugio}</p>
                             <div>
