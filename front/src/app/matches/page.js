@@ -13,6 +13,8 @@ export default function MatchesPage() {
     const [mascotasFiltradas, setMascotasFiltradas] = useState([]);
     const [carPorMascota, setCarPorMascota] = useState([]);
     const [mascotaElegida, setMascotaElegida] = useState(null);
+    const [matches, setMatches] = useState([]);
+    const [error, setError] = useState("");
 
     const [confirmacion, setConfirmacion] = useState(false);
     const [errorCierre, setErrorCierre] = useState("");
@@ -24,7 +26,6 @@ export default function MatchesPage() {
     const [sexo, setSexo] = useState("");
     const [carFiltro, setCarFiltro] = useState("");
     const [caracteristicas, setCaracteristicas] = useState([]);
-
     const [abierto, setAbierto] = useState(false);
 
     const router = useRouter();
@@ -33,10 +34,14 @@ export default function MatchesPage() {
         fetch('http://localhost:4000/mascotas')
             .then(response => response.json())
             .then(data => {
-                setMascotas(data);
-                setMascotasFiltradas(data);
-                cargarCarPorMascota();
-                cargarMascotaRandom();
+                if (data === -1) {
+                    setError("Ha ocurrido un error, intente denuevo más tarde.");
+                } else {
+                    setMascotas(data);
+                    setMascotasFiltradas(data);
+                    cargarCarPorMascota();
+                    cargarMascotaRandom();
+                }
             })
     }
     const cargarCarPorMascota = () => {
@@ -54,15 +59,34 @@ export default function MatchesPage() {
                 }
             });
     }
-    const cargarMascotaRandom = () => {
-        let indice = Math.floor(Math.random() * mascotasFiltradas.length);
-        setMascotaElegida(mascotasFiltradas[indice]);
-    }
     const cargarCaracteristicas = () => {
         fetch('http://localhost:4000/caracteristicas')
             .then(response => response.json())
-            .then(data => setCaracteristicas(data))
+            .then(data => {
+                if (data === -1) {
+                    setError("Ha ocurrido un error, intente denuevo más tarde.");
+                } else {
+                    setCaracteristicas(data);
+                }
+            })
     }
+    const cargarMatches = () => {
+        fetch('http://localhost:4000/matches')
+            .then(response => response.json())
+            .then(data => {
+                if (data === -1) {
+                    setError("Ha ocurrido un error, intente denuevo más tarde.");
+                } else {
+                    setMatches(data);
+                }
+            })
+    }
+    useEffect(() => {
+        cargarMascotas();
+        cargarCaracteristicas();
+        cargarMatches();
+    }, []);
+
     const cambiarCaracteristicas = (bool, id_car) => {
         if (bool) {
             if (!carFiltro.includes(id_car)) {
@@ -74,16 +98,37 @@ export default function MatchesPage() {
             }
         }
     }
-    useEffect(() => {
-        cargarMascotas();
-        cargarCaracteristicas();
-    }, []);
+    const cargarMascotaRandom = () => {
+        let indice = Math.floor(Math.random() * mascotasFiltradas.length);
+        setMascotaElegida(mascotasFiltradas[indice]);
+    }
+    const guardarMatch = (bool) => {
+        datos = {id_pet: mascotaElegida.id_mascota, match: bool};
+        fetch('http://localhost:4000/registerMatch', {
+            method: 'POST',
+            body: datos
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data === -1) {
+                    setError("Ha ocurrido un error, intente denuevo más tarde.");
+                } else {
+                    if (bool === true) {}
+                    cargarMatches();
+                }
+            });
+    }
 
     useEffect(() => {
-        if (especie) {
-            setMascotasFiltradas(mascotas.filter(pet => pet.especie === especie));
+        if (matches) {
+            setMascotasFiltradas(mascotas.filter(pet => {
+                matches.every(match => match.id_mascota !== pet.id_mascota);
+            }))
         } else {
             setMascotasFiltradas(mascotas);
+        }
+        if (especie) {
+            setMascotasFiltradas(mascotas.filter(pet => pet.especie === especie));
         }
         if (raza) {
             setMascotasFiltradas(mascotasFiltradas.filter(pet => pet.raza === raza));
@@ -107,7 +152,7 @@ export default function MatchesPage() {
         if (!mascotasFiltradas.includes(mascotaElegida)) {
             cargarMascotaRandom();
         };
-    }, [especie, raza, edadMax, edadMin, sexo, carFiltro])
+    }, [matches, especie, raza, edadMax, edadMin, sexo, carFiltro])
 
     const cerrarSesion = () => {
         fetch('http://localhost:4000/cierreSesion')
@@ -200,8 +245,8 @@ export default function MatchesPage() {
                             </div>
                             <p>{mascotaElegida.nombre_refugio}</p>
                             <div>
-                                <Button text={"Pasar"} funcion={x}></Button>
-                                <Button text={"Me interesa"} funcion={x}></Button>
+                                <Button text={"Pasar"} funcion={() => guardarMatch(false)}></Button>
+                                <Button text={"Me interesa"} funcion={() => guardarMatch(true)}></Button>
                             </div>
                         </div>
                     </div>
