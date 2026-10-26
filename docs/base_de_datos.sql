@@ -46,6 +46,14 @@ FOREIGN KEY (id_mascota) REFERENCES Mascotas(id_mascota),
 FOREIGN KEY (id_caracteristica) REFERENCES Caracteristicas(id_caracteristica)
 );
 
+CREATE TABLE IF NOT EXISTS Matches (
+id_usuario int,
+id_mascota int,
+es_match bool,
+FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario),
+FOREIGN KEY (id_mascota) REFERENCES Mascotas(id_mascota)
+);
+
 CREATE TABLE IF NOT EXISTS Chats(
 id_chat int auto_increment unique not null,
 id_usuario int,

@@ -29,6 +29,7 @@ app.get('/', function(req, res){
 });
 
 
+// INICIO DE SESION
 // login
 app.post('/login', async function(req, res) {
     try {
@@ -118,6 +119,7 @@ app.get('/cierreSesion', async function(req, res) {
     }
 })
 
+// MASCOTAS
 // cargar mascotas
 app.get('/mascotas', async function(req, res) {
     try {
@@ -130,6 +132,7 @@ app.get('/mascotas', async function(req, res) {
         res.json(respuesta);
     } catch (error) {
         res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
+        res.send(-1);
     }
 })
 // registro mascota
@@ -153,6 +156,7 @@ app.post('/registerPet', async function(req, res) {
     }
 })
 
+// CARACTERISTICAS
 // cargar caracteristicas
 app.get('/caracteristicas', async function(req, res) {
     try {
@@ -160,6 +164,7 @@ app.get('/caracteristicas', async function(req, res) {
         res.json(respuesta);
     } catch (error) {
         res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
+        res.send(-1);
     }
 })
 // cargar caracteristicas por mascota
@@ -191,6 +196,31 @@ app.post('/registerCar', async function(req, res) {
                 (${req.body.id_pet}, ${caracteristica});
             `);
         }
+    } catch (error) {
+        res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
+        res.send(-1);
+    }
+})
+
+// MATCHES
+// cargar matches
+app.get('/matches', async function(req, res) {
+    try {
+        let respuesta = await realizarQuery(`SELECT * FROM Matches WHERE id_usuario = ${req.session.id_usuario}`);
+        res.json(respuesta);
+    } catch (error) {
+        res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
+        res.send(-1);
+    }
+})
+// registro matche
+app.post('/registerMatch', async function(req, res) {
+    try {
+        console.log(req.body) ;
+        realizarQuery(`
+            INSERT INTO Matches (id_usuario, id_mascota, es_match) VALUES
+            (${req.session.id_usuario}, ${req.body.id_pet}, ${req.body.match});
+        `);
     } catch (error) {
         res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
         res.send(-1);
