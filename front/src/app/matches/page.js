@@ -5,7 +5,8 @@ import Input from "@/components/Input";
 import Select from "@/components/Select";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import eslintConfig from "../../../eslint.config.mjs";
+import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
 
 export default function MatchesPage() {
     const [mascotas, setMascotas] = useState([]);
@@ -21,7 +22,10 @@ export default function MatchesPage() {
     const [edadMax, setEdadMax] = useState(null);
     const [edadMin, setEdadMin] = useState(null);
     const [sexo, setSexo] = useState("");
-    const [caracteristica, setCaracteristica] = useState("");
+    const [carFiltro, setCarFiltro] = useState("");
+    const [caracteristicas, setCaracteristicas] = useState([]);
+
+    const [abierto, setAbierto] = useState(false);
 
     const router = useRouter();
 
@@ -54,12 +58,28 @@ export default function MatchesPage() {
         let indice = Math.floor(Math.random() * mascotasFiltradas.length);
         setMascotaElegida(mascotasFiltradas[indice]);
     }
+    const cargarCaracteristicas = () => {
+        fetch('http://localhost:4000/caracteristicas')
+            .then(response => response.json())
+            .then(data => setCaracteristicas(data))
+    }
+    const cambiarCaracteristicas = (bool, id_car) => {
+        if (bool) {
+            if (!carFiltro.includes(id_car)) {
+                setCarFiltro([...carFiltro, id_car]);
+            }
+        } else {
+            if (carFiltro.includes(id_car)) {
+                setCarFiltro(carFiltro.filter(id => id !== id_car));
+            }
+        }
+    }
     useEffect(() => {
         cargarMascotas();
+        cargarCaracteristicas();
     }, []);
 
     useEffect(() => {
-        console.log(especie, raza, edadMax, edadMin, sexo, caracteristica)
         if (especie) {
             setMascotasFiltradas(mascotas.filter(pet => pet.especie === especie));
         } else {
@@ -77,10 +97,17 @@ export default function MatchesPage() {
         if (sexo) {
             setMascotasFiltradas(mascotasFiltradas.filter(pet => pet.sexo === sexo));
         }
+        if (carFiltro) {
+            setMascotasFiltradas(mascotasFiltradas.filter(pet => {
+                carFiltro.every((id_car) => {
+                    carPorMascota.some((car) => car.id_mascota === pet.id_mascota && car.id_caracteristica === id_car);
+                })
+            }));
+        }
         if (!mascotasFiltradas.includes(mascotaElegida)) {
             cargarMascotaRandom();
         };
-    }, [especie, raza, edadMax, edadMin, sexo, caracteristica])
+    }, [especie, raza, edadMax, edadMin, sexo, carFiltro])
 
     const cerrarSesion = () => {
         fetch('http://localhost:4000/cierreSesion')
@@ -129,6 +156,14 @@ export default function MatchesPage() {
                     <Input type={"number"} text={"Edad máxima"} placeholder={"Ingrese la edad máxima"} change={setEdadMax}></Input>
                     <Input type={"number"} text={"Edad mínima"} placeholder={"Ingrese la edad mínima"} change={setEdadMin}></Input>
                     <Select text={"Sexo"} change={setSexo} options={["F", "M"]}></Select>
+                    <label>Caracteristicas</label>
+                    <Popup trigger={<Button text={abierto ? "Cerrar" : "Seleccionar..."}></Button>} onOpen={() => setAbierto(true)} onClose={() => setAbierto(false)}>
+                        {caracteristicas.map(car => (
+                            <div>
+                                <Checkbox id={car.id_caracteristica} text={car.descripcion} change={cambiarCaracteristicas}></Checkbox>
+                            </div>
+                        ))}
+                    </Popup>
                 </div>
                 <div>
                     <img src={mascotaElegida.foto} alt="Foto mascota"></img>
