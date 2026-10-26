@@ -103,7 +103,7 @@ export default function MatchesPage() {
         setMascotaElegida(mascotasFiltradas[indice]);
     }
     const guardarMatch = (bool) => {
-        datos = {id_pet: mascotaElegida.id_mascota, match: bool};
+        let datos = {id_pet: mascotaElegida.id_mascota, match: bool};
         fetch('http://localhost:4000/registerMatch', {
             method: 'POST',
             body: datos
@@ -113,7 +113,19 @@ export default function MatchesPage() {
                 if (data === -1) {
                     setError("Ha ocurrido un error, intente denuevo más tarde.");
                 } else {
-                    if (bool === true) {}
+                    if (bool === true) {
+                        let info = {id_refugio: mascotaElegida.id_refugio, id_pet: mascotaElegida.id_mascota};
+                        fetch('http://localhost:4000/newChat', {
+                            method: 'POST',
+                            body: info
+                        })
+                            .then(res => res.json())
+                            .then(rta => {
+                                if (rta === -1) {
+                                    setError("Ha ocurrido un error, intente denuevo más tarde.");
+                                }
+                            })
+                    }
                     cargarMatches();
                 }
             });

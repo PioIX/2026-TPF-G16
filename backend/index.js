@@ -127,7 +127,7 @@ app.get('/mascotas', async function(req, res) {
         if (req.session.id_refugio) {
             respuesta = await realizarQuery(`SELECT * FROM Mascotas WHERE id_refugio = ${req.session.id_refugio}`);
         } else {
-            respuesta = await realizarQuery(`SELECT id_mascota, Mascotas.nombre, especie, raza, edad, sexo, descripcion, foto, Refugios.nombre AS nombre_refugio FROM Mascotas INNER JOIN Refugios ON Mascotas.id_refugio = Refugios.id_refugio`);
+            respuesta = await realizarQuery(`SELECT id_mascota, Mascotas.nombre, especie, raza, edad, sexo, descripcion, foto, Refugios.nombre AS nombre_refugio, id_refugio FROM Mascotas INNER JOIN Refugios ON Mascotas.id_refugio = Refugios.id_refugio`);
         }
         res.json(respuesta);
     } catch (error) {
@@ -220,6 +220,21 @@ app.post('/registerMatch', async function(req, res) {
         realizarQuery(`
             INSERT INTO Matches (id_usuario, id_mascota, es_match) VALUES
             (${req.session.id_usuario}, ${req.body.id_pet}, ${req.body.match});
+        `);
+    } catch (error) {
+        res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
+        res.send(-1);
+    }
+})
+
+// CHATS
+// crear nuevo chat
+app.post('/newChat', async function(req, res) {
+    try {
+        console.log(req.body) ;
+        realizarQuery(`
+            INSERT INTO Chats (id_usuario, id_refugio, id_mascota, fecha_creacion) VALUES
+            (${req.session.id_usuario}, ${req.body.id_refugio}, ${req.body.id_pet}, CURDATE());
         `);
     } catch (error) {
         res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
