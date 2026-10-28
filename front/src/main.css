@@ -1,0 +1,275 @@
+:root {
+  --bg-main: #FFFDF9;
+  --bg-card: #FFFBF7;
+  --border-color: #EFE8E1;
+  --text-main: #3A2D28;
+  --text-sub: #7C6A60;
+  --btn-primary: #E08B8B;
+  --btn-hover: #D47A7A;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: system-ui, -apple-system, sans-serif;
+  margin: 0;
+}
+
+/* Contenedor principal que centra todo en la pantalla */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+}
+
+/* Encabezado superior */
+.landing-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+/* Control de tamaño estricto para la imagen del logo */
+.logo-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.landing-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.landing-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-sub);
+  margin-top: 0.5rem;
+}
+
+/* Tarjeta contenedora con fondo claro */
+.landing-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
+}
+
+.select-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Estilos para los botones dentro de la tarjeta */
+.button-group button {
+  width: 100%;
+  background-color: var(--btn-primary);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.85rem;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.button-group button:hover {
+  background-color: var(--btn-hover);
+}
+
+/* estilo registro usuario*/
+/* Layout Principal para la página con tarjeta */
+.form-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem 2rem 1rem;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Header superior */
+.top-header {
+  position: absolute;
+  top: 1.5rem;
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+.top-header button {
+  background: transparent;
+  border: none;
+  color: var(--text-sub);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+}
+
+.top-header button:hover {
+  text-decoration: underline;
+}
+
+.logo-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+/* Tarjeta contenedora principal */
+.form-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
+  margin-top: 1rem;
+}
+
+/* Encabezado de la tarjeta */
+.card-header {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.header-illustration {
+  width: 90px;
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 0.25rem 0;
+}
+
+.card-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-sub);
+  margin: 0;
+}
+
+/* Campos de entrada y Botón de Acción */
+.inputs-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.inputs-wrapper button {
+  width: 100%;
+  background-color: var(--btn-primary);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.75rem;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.inputs-wrapper button:hover {
+  background-color: var(--btn-hover);
+}
+
+.error-message {
+  color: #d9534f;
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 0.25rem 0 0 0;
+}
+
+/* Separador horizontal */
+.divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin: 1.25rem 0;
+}
+
+.divider-line {
+  flex-grow: 1;
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.divider-dot {
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  color: #c2b5ac;
+}
+
+/* Bloque inferior de inicio de sesión */
+.footer-account {
+  text-align: center;
+  width: 100%;
+}
+
+.footer-text {
+  font-size: 0.75rem;
+  color: var(--text-sub);
+  margin: 0 0 0.25rem 0;
+}
+
+.footer-account button {
+  background: transparent;
+  border: none;
+  color: var(--btn-primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.footer-account button:hover {
+  text-decoration: underline;
+}
