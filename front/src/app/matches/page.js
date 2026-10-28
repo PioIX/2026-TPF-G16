@@ -16,7 +16,6 @@ export default function MatchesPage() {
     const [matches, setMatches] = useState([]);
     const [error, setError] = useState("");
 
-    const [confirmacion, setConfirmacion] = useState(false);
     const [errorCierre, setErrorCierre] = useState("");
 
     const [especie, setEspecie] = useState("");
@@ -196,15 +195,13 @@ export default function MatchesPage() {
                         <h1>Encontrá a tu compañero</h1>
                         <p>Deslizá y likeá para encontrar a tu amigo ideal</p>
                     </div>
-                    <Button text={"Cerrar sesión"} funcion={() => {setConfirmacion(true)}}></Button>
-                    {confirmacion && (
+                    <Popup trigger={<Button text={abierto ? "Volver" : "Cerrar Sesión"}></Button>}>
                         <div>
                             <p>¿Estás seguro de que quieres cerrar sesión?</p>
                             <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
-                            <Button text={"Volver"} funcion={() => {setConfirmacion(false)}}></Button>
+                            {errorCierre && (<p>{errorCierre}</p>)}
                         </div>
-                    )}
-                    {errorCierre && (<p>{errorCierre}</p>)}
+                    </Popup>
                 </div>
                 <div>
                     <h4>Filtros</h4>
