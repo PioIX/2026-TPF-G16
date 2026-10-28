@@ -228,6 +228,21 @@ app.post('/registerMatch', async function(req, res) {
 })
 
 // CHATS
+// cargar chats
+app.get('/chats', async function(req, res) {
+    try {
+        let respuesta;
+        if (req.session.tipo === "usuario") {
+            respuesta = await realizarQuery(`SELECT Chats.id_chat, Chats.id_mascota, Mascotas.nombre AS nombre_pet, Mascotas.foto FROM Chats INNER JOIN Mascotas ON Chats.id_mascota = Mascotas.id_mascota INNNER JOIN Mensajes ON Chats.id_chat = Mensajes.id_chat WHERE id_usuario = ${req.session.id_usuario} GROUP BY Chats.id_chat ORDER BY MAX(Mensajes.fecha_envio) DESC`);
+        } else {
+            respuesta = await realizarQuery(`SELECT Chats.id_chat, Chats.id_mascota, Usuarios.nombre, Usuarios.foto FROM Chats INNER JOIN Usuarios ON Chats.id_usuario = Usuarios.id_usuario INNNER JOIN Mensajes ON Chats.id_chat = Mensajes.id_chat WHERE id_refugio = ${req.session.id_refugio} GROUP BY Chats.id_chat ORDER BY MAX(Mensajes.fecha_envio) DESC`);
+        }
+        res.json(respuesta);
+    } catch (error) {
+        res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
+        res.send(-1);
+    }
+})
 // crear nuevo chat
 app.post('/newChat', async function(req, res) {
     try {
