@@ -1,80 +1,74 @@
-"use client"
+"use client";
 
 import Input from "@/components/Input";
 import Button from "@/components/Button";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import "@/main.css";
 
-export default function LoginPage() {
-    const searchParams = useSearchParams();
-    const user = searchParams.get("user");
-
+export default function Login() {
     const [mail, setMail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-
     const router = useRouter();
 
     const iniciarSesion = () => {
-        const datos = {tipoUser: user, mail: mail, password: password};
+        // Tu lógica de login aquí
+    };
 
-        fetch('http://localhost:4000/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(datos)
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data === 0){
-                    setError("Mail o contraseña incorrectos, intenta denuevo.");
-                } else if (data === -1) {
-                    setError("Ha ocurrido un error, intente denuevo más tarde.");
-                } else {
-                    if (user === "usuario") {
-                        router.replace("/matches");
-                    } else {
-                        router.replace("/mascotas");
-                    }
-                }
-            });
-    }
-
-    const irRegistro = () => {
-        if (user === "usuario") {
-            router.push("/registroUser");
-        } else {
-            router.push("/registroRef");
-        }
-    }
-
-    return(
-        <main>
-            <div>
-                <div>
-                    <img></img>
-                    <h1>PetMatch</h1>
+    return (
+        <main className="form-container">
+            <div className="top-header">
+                <div className="logo-box">
+                    <img src="/logo-paws.png" alt="PetMatch Logo" className="logo-img" />
+                    <h1 className="logo-title">PetMatch</h1>
                 </div>
-                <Button text={"Volver al inicio"} funcion={() => {router.back()}}></Button>
+                <Button text={"← Volver al inicio"} funcion={() => router.back()} />
             </div>
-            <div>
-                <div>
-                    <img></img>
-                    <h2>Iniciar sesión</h2>
-                    <p>¡Qué bueno verte denuevo!</p>
+
+            <div className="form-card">
+                <div className="card-header">
+                    <img
+                        src="/pets-illustration.png"
+                        alt="Mascotas"
+                        className="header-illustration"
+                    />
+                    <h2 className="card-title">Iniciar sesión</h2>
+                    <p className="card-subtitle">¡Qué bueno verte de nuevo!</p>
                 </div>
-                <div>
-                    <Input type={"email"} text={"Correo electrónico"} placeholder={"ejemplo@gmail.com"} change={setMail}></Input>
-                    <Input type={"password"} text={"Contraseña"} placeholder={"Ingresa tu contraseña"} change={setPassword}></Input>
-                    <Button text={"Iniciar sesión"} funcion={iniciarSesion}></Button>
-                    {error && (<p>{error}</p>)}
+
+                <div className="inputs-wrapper">
+                    <Input
+                        type={"email"}
+                        text={"Correo electrónico"}
+                        placeholder={"ejemplo@gmail.com"}
+                        change={setMail}
+                    />
+                    <Input
+                        type={"password"}
+                        text={"Contraseña"}
+                        placeholder={"Ingresa tu contraseña"}
+                        change={setPassword}
+                    />
+
+                    <Button text={"Iniciar sesión →"} funcion={iniciarSesion} />
+                    {error && <p className="error-message">{error}</p>}
                 </div>
-                <div>
-                    <p>¿No tenés una cuenta?</p>
-                    <Button text={"Registrate aquí"} funcion={irRegistro}></Button>
+
+                <div className="divider">
+                    <div className="divider-line"></div>
+                    <span className="divider-dot">o</span>
+                    <div className="divider-line"></div>
+                </div>
+
+                <div className="footer-account">
+                    <p className="footer-text">¿No tenés una cuenta?</p>
+                    <Button
+                        text={"Registrate aquí"}
+                        funcion={() => router.push("/registroUser")}
+                    />
                 </div>
             </div>
         </main>
-    )
+    );
 }

@@ -1,6 +1,6 @@
 export default function Input({ type, text, placeholder, change}) {
     const cambio = (e) => {
-        if (tipo === "file") {
+        if (type === "file") {
             change(e.target.files[0]);
         } else {
             change(e.target.value);
