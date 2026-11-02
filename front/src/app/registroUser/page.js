@@ -40,21 +40,12 @@ export default function Registro() {
             });
     }
 
-<<<<<<< Updated upstream
     return (
         <main className="form-container">
             <div className="top-header">
                 <div className="logo-box">
                     <img src="/logo-paws.png" alt="PetMatch Logo" className="logo-img" />
                     <h1 className="logo-title">PetMatch</h1>
-=======
-    return(
-        <main>
-            <div>
-                <div>
-                    <img></img>
-                    <h1>PetMatch</h1>
->>>>>>> Stashed changes
                 </div>
                 <Button text={"← Volver al inicio"} funcion={() => { router.back() }}></Button>
             </div>
