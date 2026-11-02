@@ -1,15 +1,25 @@
-var express = require('express');
+const express = require('express');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 const { realizarQuery } = require('./modulos/mysql');
 const session = require("express-session");
 
+const io = require("socket.io")(server, {
+    cors: {
+        origin: ["http://localhost:3000", "http://localhost:3001"],
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        credentials: true,
+    },
+});
 const sessionMiddleware = session({
-    secret: "aprobanosporfa",
+    secret: "porfaaprobanos",
     resave: false,
     saveUninitialized: false,
 });
 app.use(sessionMiddleware);
+io.use((socket, next) => {
+    sessionMiddleware(socket.request, {}, next);
+});
 
 var app = express();
 var port = process.env.PORT || 4000;
@@ -231,11 +241,16 @@ app.post('/registerMatch', async function(req, res) {
 // cargar chats
 app.get('/chats', async function(req, res) {
     try {
-        let respuesta;
+        let chats;
         if (req.session.tipo === "usuario") {
-            respuesta = await realizarQuery(`SELECT Chats.id_chat, Chats.id_mascota, Mascotas.nombre AS nombre_pet, Mascotas.foto FROM Chats INNER JOIN Mascotas ON Chats.id_mascota = Mascotas.id_mascota INNNER JOIN Mensajes ON Chats.id_chat = Mensajes.id_chat WHERE id_usuario = ${req.session.id_usuario} GROUP BY Chats.id_chat ORDER BY MAX(Mensajes.fecha_envio) DESC`);
+            chats = await realizarQuery(`SELECT Chats.id_chat, Chats.id_mascota, Mascotas.nombre AS nombrePrincipal, Mascotas.foto, Refugios.nombre AS nombreSecundario, MAX(Mensajes.fecha_envio) AS ultimoMsj FROM Chats INNER JOIN Mascotas ON Chats.id_mascota = Mascotas.id_mascota INNER JOIN Refugios ON Chats.id_refugio = Refugios.id_refugio INNNER JOIN Mensajes ON Chats.id_chat = Mensajes.id_chat WHERE id_usuario = ${req.session.id_usuario} GROUP BY Chats.id_chat ORDER BY MAX(Mensajes.fecha_envio) DESC`);
         } else {
-            respuesta = await realizarQuery(`SELECT Chats.id_chat, Chats.id_mascota, Usuarios.nombre, Usuarios.foto FROM Chats INNER JOIN Usuarios ON Chats.id_usuario = Usuarios.id_usuario INNNER JOIN Mensajes ON Chats.id_chat = Mensajes.id_chat WHERE id_refugio = ${req.session.id_refugio} GROUP BY Chats.id_chat ORDER BY MAX(Mensajes.fecha_envio) DESC`);
+            chats = await realizarQuery(`SELECT Chats.id_chat, Chats.id_mascota, Usuarios.nombre AS nombrePrincipal, Usuarios.foto, Mascotas.nombre AS nombreSecundario, MAX(Mensajes.fecha_envio) AS ultimoMsj FROM Chats INNER JOIN Usuarios ON Chats.id_usuario = Usuarios.id_usuario INNER JOIN Mascotas ON Chats.id_mascota = Mascotas.id_mascota INNNER JOIN Mensajes ON Chats.id_chat = Mensajes.id_chat WHERE id_refugio = ${req.session.id_refugio} GROUP BY Chats.id_chat ORDER BY MAX(Mensajes.fecha_envio) DESC`);
+        }
+        let ultimoMsj;
+        for (let i = 0; i < chats.length; i++) {
+            ultimoMsj = await realizarQuery(`SELECT texto FROM Mensajes WHERE id_chat = ${chats[i].id_chat} ORDER BY fecha_envio DESC LIMIT 1`);
+            chats[i].ultimoMsj = ultimoMsj[0];
         }
         res.json(respuesta);
     } catch (error) {
@@ -255,4 +270,24 @@ app.post('/newChat', async function(req, res) {
         res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
         res.send(-1);
     }
+})
+
+// Mensajes
+app.get('/mensajes', async function(req, res) {
+    try {
+        let respuesta = await realizarQuery(`SELECT * FROM Mensajes WHERE id_chat = ${req.params.id_chat} ORDER BY fecha_envio ASC`);
+        res.json(respuesta);
+    } catch (error) {
+        res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
+        res.send(-1);
+    }
+})
+
+
+
+// WEB SOCKET
+io.on('connection', function(socket){
+    socket.on('unirse_chat', async function(id_chat) {
+        socket.join(`chat_${id_chat}`);
+    })
 })

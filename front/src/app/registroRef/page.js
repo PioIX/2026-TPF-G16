@@ -47,7 +47,7 @@ export default function Registro() {
             <div>
                 <div>
                     <img></img>
-                    <h1>Pio Chat</h1>
+                    <h1>PetMatch</h1>
                 </div>
                 <Button text={"Volver al inicio"} funcion={() => {router.back()}}></Button>
             </div>
