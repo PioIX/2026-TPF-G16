@@ -1,13 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react";
+import ChatObj from "@/components/ChatObj";
+import Chat from "@/components/Chat";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 
 export default function ChatsPage() {
     const [chats, setChats] = useState([]);
     const [chatElegido, setChatElegido] = useState(null);
-    const [ultimosMsj, setUltimosMsj] = useState([]);
     const [mensajes, setMensajes] = useState([]);
     const [error, setError] = useState("");
 
@@ -28,6 +29,25 @@ export default function ChatsPage() {
                 }
             })
     }
+    const selectChat = (id_chat) => {
+        chats.forEach(chat => {
+            if (chat.id_chat = id_chat) {
+                setChatElegido(chat);
+            }
+        })
+    }
+
+    useEffect(() => {
+        fetch(`http://localhost:4000/mensajes/${chatElegido.id_chat}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data === -1) {
+                    setError("Ha ocurrido un error, intente denuevo más tarde.");
+                } else {
+                    setMensajes(data);
+                }
+            })
+    }, [chatElegido])
 
     const cerrarSesion = () => {
         fetch('http://localhost:4000/cierreSesion')
@@ -65,14 +85,7 @@ export default function ChatsPage() {
                     <div>
                         <h1>Tus chats</h1>
                         {chats.map(chat => {
-                            <div id={chat.id_chat}>
-                                <img src=""></img>
-                                <div>
-                                    <h4>{chat.nombre}</h4>
-                                    <p>{chat.nombre_refugio}</p>
-                                    <p>{chat.ultimoMsj}</p>
-                                </div>
-                            </div>
+                            <Chat chat={chat} funcion={selectChat}></Chat>
                         })}
                     </div>
                 </div>
