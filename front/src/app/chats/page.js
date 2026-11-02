@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react";
+import useSocket from "@/hooks/useSocket";
 import ChatObj from "@/components/ChatObj";
 import Chat from "@/components/Chat";
 import Popup from "reactjs-popup";
@@ -13,6 +14,7 @@ export default function ChatsPage() {
     const [error, setError] = useState("");
 
     const [errorCierre, setErrorCierre] = useState("");
+    const { socket, isConnected } = useSocket();
 
     useEffect(() => {
         cargarChats()
@@ -33,6 +35,9 @@ export default function ChatsPage() {
         chats.forEach(chat => {
             if (chat.id_chat = id_chat) {
                 setChatElegido(chat);
+                if (socket) {
+                socket.emit('joinRoom', { room: id_chat })
+            }
             }
         })
     }

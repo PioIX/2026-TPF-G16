@@ -49,7 +49,7 @@ app.post('/login', async function(req, res) {
             if (id.length === 0) {
                 res.send(0)
             } else {
-                req.session.id_usuario = id[0];
+                req.session.user = id[0];
                 req.session.tipo = "usuario";
                 res.json(id[0]);
             }
@@ -58,7 +58,7 @@ app.post('/login', async function(req, res) {
             if (id.length === 0) {
                 res.send(0)
             } else {
-                req.session.id_refugio = id[0];
+                req.session.user = id[0];
                 req.session.tipo = "refugio";
                 res.json(id[0]);
             }
@@ -81,7 +81,7 @@ app.post('/registerUser', async function(req, res) {
                 ("${req.body.nombre}","${req.body.apellido}","${req.body.mail}","${req.body.password}","${req.body.foto}");
             `);
             let id = await realizarQuery(`SELECT LAST_INSERT_ID()`);
-            req.session.id_usuario = id[0];
+            req.session.user = id[0];
             req.session.tipo = "usuario";
             res.json(id[0]);
         }
@@ -103,7 +103,7 @@ app.post('/registerRef', async function(req, res) {
                 ("${req.body.nombre}","${req.body.mail}","${req.body.password}","${req.body.foto}", "${req.body.direccion}", ${req.body.telefono});
             `);
             let id = await realizarQuery(`SELECT LAST_INSERT_ID()`);
-            req.session.id_refugio = id[0];
+            req.session.user = id[0];
             req.session.tipo = "refugio";
             res.json(id[0]);
         }
@@ -116,11 +116,7 @@ app.post('/registerRef', async function(req, res) {
 app.get('/cierreSesion', async function(req, res) {
     try {
         console.log(req.body) ;
-        if (req.session.tipo === "usuario") {
-            delete req.session.id_usuario;
-        } else {
-            delete req.session.id_refugio;
-        }
+        delete req.session.user;
         delete req.session.tipo;
         res.send(0);
     } catch (error) {
@@ -134,8 +130,8 @@ app.get('/cierreSesion', async function(req, res) {
 app.get('/mascotas', async function(req, res) {
     try {
         let respuesta;
-        if (req.session.id_refugio) {
-            respuesta = await realizarQuery(`SELECT * FROM Mascotas WHERE id_refugio = ${req.session.id_refugio}`);
+        if (req.session.user.id_refugio) {
+            respuesta = await realizarQuery(`SELECT * FROM Mascotas WHERE id_refugio = ${req.session.user.id_refugio}`);
         } else {
             respuesta = await realizarQuery(`SELECT id_mascota, Mascotas.nombre, especie, raza, edad, sexo, descripcion, foto, Refugios.nombre AS nombre_refugio, id_refugio FROM Mascotas INNER JOIN Refugios ON Mascotas.id_refugio = Refugios.id_refugio`);
         }
@@ -149,11 +145,11 @@ app.get('/mascotas', async function(req, res) {
 app.post('/registerPet', async function(req, res) {
     try {
         console.log(req.body) ;
-        let existe = await realizarQuery(`SELECT * FROM Mascotas WHERE nombre = "${req.body.nombre}" AND id_refugio = ${req.session.id_refugio}`) ;
+        let existe = await realizarQuery(`SELECT * FROM Mascotas WHERE nombre = "${req.body.nombre}" AND id_refugio = ${req.session.user.id_refugio}`) ;
         if (existe.length > 0) {
             res.send(0);
         } else {
-            realizarQuery(`
+            await realizarQuery(`
                 INSERT INTO Mascotas (nombre, especie, raza, edad, sexo, desc, foto) VALUES
                 ("${req.body.nombre}", "${req.body.especie}", "${req.body.raza}", ${req.body.edad}, "${req.body.sexo}", "${req.body.desc}", "${req.body.foto}");
             `);
@@ -216,7 +212,7 @@ app.post('/registerCar', async function(req, res) {
 // cargar matches
 app.get('/matches', async function(req, res) {
     try {
-        let respuesta = await realizarQuery(`SELECT * FROM Matches WHERE id_usuario = ${req.session.id_usuario}`);
+        let respuesta = await realizarQuery(`SELECT * FROM Matches WHERE id_usuario = ${req.session.user.id_usuario}`);
         res.json(respuesta);
     } catch (error) {
         res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
@@ -229,7 +225,7 @@ app.post('/registerMatch', async function(req, res) {
         console.log(req.body) ;
         realizarQuery(`
             INSERT INTO Matches (id_usuario, id_mascota, es_match) VALUES
-            (${req.session.id_usuario}, ${req.body.id_pet}, ${req.body.match});
+            (${req.session.user.id_usuario}, ${req.body.id_pet}, ${req.body.match});
         `);
     } catch (error) {
         res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
@@ -243,9 +239,9 @@ app.get('/chats', async function(req, res) {
     try {
         let chats;
         if (req.session.tipo === "usuario") {
-            chats = await realizarQuery(`SELECT Chats.id_chat, Chats.id_mascota, Mascotas.nombre AS nombrePrincipal, Mascotas.foto, Refugios.nombre AS nombreSecundario, MAX(Mensajes.fecha_envio) AS ultimoMsj FROM Chats INNER JOIN Mascotas ON Chats.id_mascota = Mascotas.id_mascota INNER JOIN Refugios ON Chats.id_refugio = Refugios.id_refugio INNNER JOIN Mensajes ON Chats.id_chat = Mensajes.id_chat WHERE id_usuario = ${req.session.id_usuario} GROUP BY Chats.id_chat ORDER BY MAX(Mensajes.fecha_envio) DESC`);
+            chats = await realizarQuery(`SELECT Chats.id_chat, Chats.id_mascota, Mascotas.nombre AS nombrePrincipal, Mascotas.foto, Refugios.nombre AS nombreSecundario, MAX(Mensajes.fecha_envio) AS ultimoMsj FROM Chats INNER JOIN Mascotas ON Chats.id_mascota = Mascotas.id_mascota INNER JOIN Refugios ON Chats.id_refugio = Refugios.id_refugio INNNER JOIN Mensajes ON Chats.id_chat = Mensajes.id_chat WHERE id_usuario = ${req.session.user.id_usuario} GROUP BY Chats.id_chat ORDER BY MAX(Mensajes.fecha_envio) DESC`);
         } else {
-            chats = await realizarQuery(`SELECT Chats.id_chat, Chats.id_mascota, Usuarios.nombre AS nombrePrincipal, Usuarios.foto, Mascotas.nombre AS nombreSecundario, MAX(Mensajes.fecha_envio) AS ultimoMsj FROM Chats INNER JOIN Usuarios ON Chats.id_usuario = Usuarios.id_usuario INNER JOIN Mascotas ON Chats.id_mascota = Mascotas.id_mascota INNNER JOIN Mensajes ON Chats.id_chat = Mensajes.id_chat WHERE id_refugio = ${req.session.id_refugio} GROUP BY Chats.id_chat ORDER BY MAX(Mensajes.fecha_envio) DESC`);
+            chats = await realizarQuery(`SELECT Chats.id_chat, Chats.id_mascota, Usuarios.nombre AS nombrePrincipal, Usuarios.foto, Mascotas.nombre AS nombreSecundario, MAX(Mensajes.fecha_envio) AS ultimoMsj FROM Chats INNER JOIN Usuarios ON Chats.id_usuario = Usuarios.id_usuario INNER JOIN Mascotas ON Chats.id_mascota = Mascotas.id_mascota INNNER JOIN Mensajes ON Chats.id_chat = Mensajes.id_chat WHERE id_refugio = ${req.session.user.id_refugio} GROUP BY Chats.id_chat ORDER BY MAX(Mensajes.fecha_envio) DESC`);
         }
         let ultimoMsj;
         for (let i = 0; i < chats.length; i++) {
@@ -264,7 +260,7 @@ app.post('/newChat', async function(req, res) {
         console.log(req.body) ;
         realizarQuery(`
             INSERT INTO Chats (id_usuario, id_refugio, id_mascota, fecha_creacion) VALUES
-            (${req.session.id_usuario}, ${req.body.id_refugio}, ${req.body.id_pet}, CURDATE());
+            (${req.session.user.id_usuario}, ${req.body.user.id_refugio}, ${req.body.id_pet}, CURDATE());
         `);
     } catch (error) {
         res.status(500).send('Ha ocurrido un error, intentar más tarde') ;
@@ -287,7 +283,38 @@ app.get('/mensajes', async function(req, res) {
 
 // WEB SOCKET
 io.on('connection', function(socket){
-    socket.on('unirse_chat', async function(id_chat) {
-        socket.join(`chat_${id_chat}`);
-    })
+    const req = socket.request;
+
+    socket.on("joinRoom", (data) => {
+        console.log("🚀 ~ io.on ~ req.session.room:", req.session.room);
+        if (req.session.room != undefined && req.session.room.length > 0) {
+            socket.leave(req.session.room);
+            req.session.room = data.room;
+            socket.join(req.session.room);
+        };
+        io.to(req.session.room).emit("chat-messages", {
+            user: req.session.user,
+            type: req.session.tipo,
+            room: req.session.room,
+        });
+    });
+
+    socket.on("sendMessage", async (data) => {
+        try {
+            if (req.session.tipo = "usuario") {
+                await realizarQuery(`INSERT INTO Mensajes (id_usuario, id_chat, texto, fecha_envio) VALUES (${req.session.user.id_usuario}, ${req.session.room}, "${data}", NOW())`);
+            } else {
+                await realizarQuery(`INSERT INTO Mensajes (id_refugio, id_chat, texto, fecha_envio) VALUES (${req.session.user.id_refugio}, ${req.session.room}, "${data}", NOW())`);
+            }
+
+            io.to(req.session.room).emit("newMessage", {message: data});
+        } catch (error) {
+            res.status(500).send('Ha ocurrido un error, intentar más tarde');
+            res.send(-1);
+        }
+    });
+
+    socket.on("disconnect", () => {
+        console.log("Disconnect");
+    });
 })
