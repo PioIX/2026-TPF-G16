@@ -292,10 +292,9 @@ io.on('connection', function(socket){
             req.session.room = data.room;
             socket.join(req.session.room);
         };
-        io.to(req.session.room).emit("chat-messages", {
+        io.emit("userData", {
             user: req.session.user,
             type: req.session.tipo,
-            room: req.session.room,
         });
     });
 

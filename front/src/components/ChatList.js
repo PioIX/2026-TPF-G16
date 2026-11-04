@@ -1,4 +1,4 @@
-export default function ChatObj({ chat, funcion }) {
+export default function ChatList({ chat, funcion }) {
     <button id={chat.id_chat} onClick={() => funcion(id_chat)}>
         <img src=""></img>
         <div>
