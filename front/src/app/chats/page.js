@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import useSocket from "@/hooks/useSocket";
-import ChatObj from "@/components/ChatObj";
+import ChatList from "@/components/ChatList";
 import Chat from "@/components/Chat";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
@@ -10,7 +10,9 @@ import "reactjs-popup/dist/index.css";
 export default function ChatsPage() {
     const [chats, setChats] = useState([]);
     const [chatElegido, setChatElegido] = useState(null);
+    const [usuario, setUsuario] = useState(null);
     const [mensajes, setMensajes] = useState([]);
+    const [msj, setMsj] = useState("");
     const [error, setError] = useState("");
 
     const [errorCierre, setErrorCierre] = useState("");
@@ -19,6 +21,18 @@ export default function ChatsPage() {
     useEffect(() => {
         cargarChats()
     }, []);
+
+    useEffect(() => {
+        if (!socket) return;
+
+        socket.on("userData", (data) => {setUsuario(data);})
+        socket.on("newMessage", (data) => {setMensajes([...mensajes, data])})
+
+        return () => {
+            socket.off("userData");
+            socket.off("newMessage");
+        }
+    }, [socket]);
 
     const cargarChats = () => {
         fetch('http://localhost:4000/chats')
@@ -36,10 +50,17 @@ export default function ChatsPage() {
             if (chat.id_chat = id_chat) {
                 setChatElegido(chat);
                 if (socket) {
-                socket.emit('joinRoom', { room: id_chat })
-            }
+                    socket.emit('joinRoom', { room: id_chat })
+                }
             }
         })
+    }
+
+    const enviarMsj = () => {
+        if (msj) {
+            socket.emit('sendMessage', msj)
+            setMsj("");
+        }
     }
 
     useEffect(() => {
@@ -90,8 +111,13 @@ export default function ChatsPage() {
                     <div>
                         <h1>Tus chats</h1>
                         {chats.map(chat => {
-                            <Chat chat={chat} funcion={selectChat}></Chat>
+                            <ChatList chat={chat} funcion={selectChat}></ChatList>
                         })}
+                    </div>
+                    <div>
+                        {chatElegido && (
+                            <Chat mensajes={mensajes} tipoUser={usuario.type} change={setMsj} funcion={enviarMsj}></Chat>
+                        )}
                     </div>
                 </div>
             </div>
