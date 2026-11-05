@@ -131,12 +131,11 @@ export default function MatchesPage() {
     }
 
     useEffect(() => {
+        setMascotasFiltradas(mascotas.filter(pet => {pet.estado === "Disponible"}));
         if (matches) {
             setMascotasFiltradas(mascotas.filter(pet => {
                 matches.every(match => match.id_mascota !== pet.id_mascota);
             }))
-        } else {
-            setMascotasFiltradas(mascotas);
         }
         if (especie) {
             setMascotasFiltradas(mascotas.filter(pet => pet.especie === especie));

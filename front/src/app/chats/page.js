@@ -6,6 +6,7 @@ import ChatList from "@/components/ChatList";
 import Chat from "@/components/Chat";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
+import Button from "@/components/Button";
 
 export default function ChatsPage() {
     const [chats, setChats] = useState([]);
@@ -32,7 +33,7 @@ export default function ChatsPage() {
             socket.off("userData");
             socket.off("newMessage");
         }
-    }, [socket]);
+    }, [socket, isConnected]);
 
     const cargarChats = () => {
         fetch('http://localhost:4000/chats')
@@ -56,6 +57,30 @@ export default function ChatsPage() {
         })
     }
 
+    const adoptar = () => {
+        const datos = {id_pet: chatElegido.id_mascota, pet: chatElegido.nombreSecundario, id_usuario: chatElegido.id_usuario, id_chat: chatElegido.id_chat};
+        fetch(`http://localhost:4000/adoptar`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        })
+        .then(response => response.json())
+        .then(data => console.log());
+    }
+    const eliminar = () => {
+        const datos = {id_chat: chatElegido.id_chat};
+        fetch(`http://localhost:4000/eliminarChat`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datos)
+            })
+        .then(response => response.json())
+        .then(data => console.log());
+    }
     const enviarMsj = () => {
         if (msj) {
             socket.emit('sendMessage', msj)
@@ -115,6 +140,12 @@ export default function ChatsPage() {
                         })}
                     </div>
                     <div>
+                        {usuario.type === "refugio" && (
+                            <div>
+                                <Button text={"Marcar como adoptado"} funcion={adoptar}></Button>
+                                <Button text={"Eliminar chat"} funcion={eliminar}></Button>
+                            </div>
+                        )}
                         {chatElegido && (
                             <Chat mensajes={mensajes} tipoUser={usuario.type} change={setMsj} funcion={enviarMsj}></Chat>
                         )}
