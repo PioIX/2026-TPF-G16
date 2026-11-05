@@ -28,6 +28,7 @@ edad int,
 sexo varchar(1),
 descripcion varchar(255),
 foto varchar(300),
+estado varchar(50),
 id_refugio int,
 PRIMARY KEY (id_mascota),
 FOREIGN KEY (id_refugio) REFERENCES Refugios(id_refugio)
