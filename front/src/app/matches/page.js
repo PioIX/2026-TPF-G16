@@ -218,6 +218,7 @@ export default function MatchesPage() {
                         ))}
                     </Popup>
                 </div>
+                {error && (<p>{error}</p>)}
                 <div>
                     <img src={mascotaElegida.foto} alt="Foto mascota"></img>
                     <div>

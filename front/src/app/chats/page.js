@@ -67,7 +67,11 @@ export default function ChatsPage() {
             body: JSON.stringify(datos)
         })
         .then(response => response.json())
-        .then(data => console.log());
+        .then(data => {
+            if (data === -1) {
+                setError("Ha ocurrido un error, intente denuevo más tarde.");
+            }
+        });
     }
     const eliminar = () => {
         const datos = {id_chat: chatElegido.id_chat};
@@ -79,7 +83,11 @@ export default function ChatsPage() {
                 body: JSON.stringify(datos)
             })
         .then(response => response.json())
-        .then(data => console.log());
+        .then(data => {
+            if (data === -1) {
+                setError("Ha ocurrido un error, intente denuevo más tarde.");
+            }
+        });
     }
     const enviarMsj = () => {
         if (msj) {
@@ -140,14 +148,21 @@ export default function ChatsPage() {
                         })}
                     </div>
                     <div>
-                        {usuario.type === "refugio" && (
-                            <div>
-                                <Button text={"Marcar como adoptado"} funcion={adoptar}></Button>
-                                <Button text={"Eliminar chat"} funcion={eliminar}></Button>
-                            </div>
-                        )}
+                        {error && (<p>{error}</p>)}
                         {chatElegido && (
-                            <Chat mensajes={mensajes} tipoUser={usuario.type} change={setMsj} funcion={enviarMsj}></Chat>
+                            <>
+                                (usuario.type === "refugio" ? (
+                                    <div>
+                                        <Button text={"Marcar como adoptado"} funcion={adoptar}></Button>
+                                        <Button text={"Eliminar chat"} funcion={eliminar}></Button>
+                                    </div>
+                                ) : (
+                                    (chatElegido.estado === "Adoptado" && (
+                                        <Button text={"Eliminar chat"} funcion={eliminar}></Button>
+                                    ))
+                                ))
+                                <Chat mensajes={mensajes} tipoUser={usuario.type} change={setMsj} funcion={enviarMsj}></Chat>
+                            </>
                         )}
                     </div>
                 </div>
