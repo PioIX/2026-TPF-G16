@@ -3,7 +3,7 @@
 import Input from "@/components/Input";
 import Button from "@/components/Button";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import "@/main.css";
 
 export default function Login() {
@@ -12,8 +12,24 @@ export default function Login() {
     const [error, setError] = useState("");
     const router = useRouter();
 
+    const searchParams = useSearchParams();
+    const tipo = searchParams.get("user");
+
     const iniciarSesion = () => {
-        // Tu lógica de login aquí
+        const datos = {user: tipo, mail: mail, password: password};
+        fetch(`http://localhost:4000/adoptar`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data === -1) {
+                setError("Ha ocurrido un error, intente denuevo más tarde.");
+            }
+        });
     };
 
     return (

@@ -44,7 +44,7 @@ app.get('/', function(req, res){
 app.post('/login', async function(req, res) {
     try {
         console.log(req.body);
-        if (tipoUser === "usuario") {
+        if (req.body.user === "usuario") {
             let id = await realizarQuery(`SELECT id_usuario FROM Usuarios WHERE mail = "${req.body.mail}" AND contraseña = "${req.body.password}"`);
             if (id.length === 0) {
                 res.send(0)
