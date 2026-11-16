@@ -5,6 +5,9 @@ const cors = require('cors');
 const { Server } = require('socket.io')
 const { realizarQuery } = require('./modulos/mysql');
 const session = require("express-session");
+const multer = require('multer');
+const path = require('path');
+const crypto = require('crypto');
 
 const app = express();
 const server = http.createServer(app);
@@ -40,6 +43,32 @@ app.listen(port, function(){
     console.log(`Server running in http://localhost:${port}`);
 });
 
+// fotos
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "uploads/");
+    },
+    filename: function (req, file, cb) {
+        const extension = path.estname(file.originalname);
+        const nombreArchivo = crypto.randomUUID() + extension;
+        cb(null, nombreArchivo);
+    }
+});
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024
+    },
+    fileFilter: function (req, file, cb) {
+        if (file.mimetype.startsWith("image/")) {
+            cb(null, true);
+        } else {
+            cb(new Error("El archivo debe ser una imagen."))
+        }
+    }
+})
+app.use("/uploads", express.static(path.join(__dirname, "uploads")))
+
 
 // INICIO DE SESION
 // login
@@ -71,16 +100,20 @@ app.post('/login', async function(req, res) {
     }
 })
 //registro usuario
-app.post('/registerUser', async function(req, res) {
+app.post('/registerUser', upload.single("foto"), async function(req, res) {
     try {
         console.log(req.body) ;
+        const foto = null;
+        if (req.file) {
+            foto = "/uploads/" + req.file.filename;
+        }
         let existe = await realizarQuery(`SELECT * FROM Usuarios WHERE mail = "${req.body.mail}"`) ;
         if (existe.length > 0) {
             res.json(0);
         } else {
             await realizarQuery(`
                 INSERT INTO Usuarios (nombre, apellido, mail, contraseña, foto) VALUES
-                ("${req.body.nombre}","${req.body.apellido}","${req.body.mail}","${req.body.password}","${req.body.foto}");
+                ("${req.body.nombre}","${req.body.apellido}","${req.body.mail}","${req.body.password}","${foto}");
             `);
             let id = await realizarQuery(`SELECT LAST_INSERT_ID()`);
             req.session.user = id[0];
@@ -93,16 +126,20 @@ app.post('/registerUser', async function(req, res) {
     }
 })
 // registro refugio
-app.post('/registerRef', async function(req, res) {
+app.post('/registerRef', upload.single("foto"), async function(req, res) {
     try {
         console.log(req.body) ;
+        const foto = null;
+        if (req.file) {
+            foto = "/uploads/" + req.file.filename;
+        }
         let existe = await realizarQuery(`SELECT * FROM Refugios WHERE mail = "${req.body.mail}"`) ;
         if (existe.length > 0) {
             res.json(0);
         } else {
             await realizarQuery(`
                 INSERT INTO Refugios (nombre, mail, contraseña, foto, direccion, telefono) VALUES
-                ("${req.body.nombre}","${req.body.mail}","${req.body.password}","${req.body.foto}", "${req.body.direccion}", ${req.body.telefono});
+                ("${req.body.nombre}","${req.body.mail}","${req.body.password}","${foto}", "${req.body.direccion}", ${req.body.telefono});
             `);
             let id = await realizarQuery(`SELECT LAST_INSERT_ID()`);
             req.session.user = id[0];
@@ -144,16 +181,20 @@ app.get('/mascotas', async function(req, res) {
     }
 })
 // registro mascota
-app.post('/registerPet', async function(req, res) {
+app.post('/registerPet', upload.single("foto"), async function(req, res) {
     try {
         console.log(req.body) ;
+        const foto = null;
+        if (req.file) {
+            foto = "/uploads/" + req.file.filename;
+        }
         let existe = await realizarQuery(`SELECT * FROM Mascotas WHERE nombre = "${req.body.nombre}" AND id_refugio = ${req.session.user}`) ;
         if (existe.length > 0) {
             res.json(0);
         } else {
             await realizarQuery(`
                 INSERT INTO Mascotas (nombre, especie, raza, edad, sexo, descripcion, foto, estado, id_refugio) VALUES
-                ("${req.body.nombre}", "${req.body.especie}", "${req.body.raza}", ${req.body.edad}, "${req.body.sexo}", "${req.body.desc}", "${req.body.foto}", "Disponible", ${req.session.user});
+                ("${req.body.nombre}", "${req.body.especie}", "${req.body.raza}", ${req.body.edad}, "${req.body.sexo}", "${req.body.desc}", "${foto}", "Disponible", ${req.session.user});
             `);
             let id = await realizarQuery(`SELECT LAST_INSERT_ID()`);
             res.json(id[0]);

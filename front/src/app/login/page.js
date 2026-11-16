@@ -28,7 +28,7 @@ export default function Login() {
         .then(response => response.json())
         .then(data => {
             if (data === 0) {
-                setError("Mail o contraseña incorrecta.")
+                setError("Mail o contraseña incorrectos.")
             } else if (data === -1) {
                 setError("Ha ocurrido un error, intente denuevo más tarde.");
             } else {

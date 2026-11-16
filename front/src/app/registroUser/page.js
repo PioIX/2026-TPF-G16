@@ -16,28 +16,35 @@ export default function Registro() {
     const router = useRouter();
 
     const registrarse = () => {
-        const datos = new FormData();
+        if (nombre.trim() === "" || apellido.trim() === "" || mail.trim() === "" || password.trim() === "") {
+            setError("Debes completar todos los campos para registrarte.")
+        } else {
+            const datos = new FormData();
 
-        datos.append("nombre", nombre);
-        datos.append("apellido", apellido);
-        datos.append("mail", mail);
-        datos.append("password", password);
-        datos.append("foto", foto);
+            datos.append("nombre", nombre);
+            datos.append("apellido", apellido);
+            datos.append("mail", mail);
+            datos.append("password", password);
+            if (foto) {
+                datos.append("foto", foto);
+            }
 
-        fetch('http://localhost:4000/registerUser', {
-            method: 'POST',
-            body: datos
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data === 0){
-                    setError("Ya existe una cuenta con este mail, intente denuevo.");
-                } else if (data === -1) {
-                    setError("Ha ocurrido un error, intente denuevo más tarde.");
-                } else {
-                    router.replace(`/matches?user=usuario`);
-                }
-            });
+            fetch('http://localhost:4000/registerUser', {
+                method: 'POST',
+                credentials: "include",
+                body: datos
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data === 0){
+                        setError("Ya existe una cuenta con este mail, intente denuevo.");
+                    } else if (data === -1) {
+                        setError("Ha ocurrido un error, intente denuevo más tarde.");
+                    } else {
+                        router.replace(`/matches`);
+                    }
+                });
+        }
     }
 
     return (
