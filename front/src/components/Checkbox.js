@@ -1,10 +1,6 @@
 export default function Checkbox({ id, text, change }) {
     const manejarCambio = (e) => {
-        if (e.target.checked) {
-            change(true, id);
-        } else {
-            change(false, id);
-        }
+        change(e.target.checked, id);
     }
 
     return(

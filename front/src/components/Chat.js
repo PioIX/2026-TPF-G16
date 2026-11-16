@@ -1,5 +1,4 @@
 export default function Chat({ mensajes, tipoUser, change, funcion }) {
-    let clase;
     const esMio = (msj) => {
         if (tipoUser === "usuario" && msj.id_usuario) {
             return true;
