@@ -23,7 +23,7 @@ export default function MatchesPage() {
     const [edadMax, setEdadMax] = useState(null);
     const [edadMin, setEdadMin] = useState(null);
     const [sexo, setSexo] = useState("");
-    const [carFiltro, setCarFiltro] = useState("");
+    const [carFiltro, setCarFiltro] = useState([]);
     const [caracteristicas, setCaracteristicas] = useState([]);
     const [abierto, setAbierto] = useState(false);
 
@@ -37,17 +37,20 @@ export default function MatchesPage() {
                     setError("Ha ocurrido un error, intente denuevo más tarde.");
                 } else {
                     setMascotas(data);
-                    setMascotasFiltradas(data);
-                    cargarCarPorMascota();
-                    cargarMascotaRandom();
+                    cargarCarPorMascota(data);
+                    cargarMascotaRandom(data);
                 }
             })
     }
-    const cargarCarPorMascota = () => {
-        let datos = {mascotas: mascotas};
+    const cargarCarPorMascota = (pets) => {
+        let datos = {mascotas: pets};
         fetch('http://localhost:4000/carPorMascota', {
             method: 'POST',
-            body: datos
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "inlcude",
+            body: JSON.stringify(datos)
         })
             .then(response => response.json())
             .then(data => {
@@ -59,7 +62,9 @@ export default function MatchesPage() {
             });
     }
     const cargarCaracteristicas = () => {
-        fetch('http://localhost:4000/caracteristicas')
+        fetch('http://localhost:4000/caracteristicas', {
+            credentials: "include"
+        })
             .then(response => response.json())
             .then(data => {
                 if (data === -1) {
@@ -70,7 +75,9 @@ export default function MatchesPage() {
             })
     }
     const cargarMatches = () => {
-        fetch('http://localhost:4000/matches')
+        fetch('http://localhost:4000/matches', {
+            credentials: "include"
+        })
             .then(response => response.json())
             .then(data => {
                 if (data === -1) {
@@ -87,6 +94,7 @@ export default function MatchesPage() {
     }, []);
 
     const cambiarCaracteristicas = (bool, id_car) => {
+        id_car = Number(id_car);
         if (bool) {
             if (!carFiltro.includes(id_car)) {
                 setCarFiltro([...carFiltro, id_car]);
@@ -98,14 +106,22 @@ export default function MatchesPage() {
         }
     }
     const cargarMascotaRandom = () => {
-        let indice = Math.floor(Math.random() * mascotasFiltradas.length);
-        setMascotaElegida(mascotasFiltradas[indice]);
+        if (mascotasFiltradas.length === 0) {
+            setMascotaElegida(null);
+        } else {
+            let indice = Math.floor(Math.random() * mascotasFiltradas.length);
+            setMascotaElegida(mascotasFiltradas[indice]);
+        }
     }
     const guardarMatch = (bool) => {
         let datos = {id_pet: mascotaElegida.id_mascota, match: bool};
         fetch('http://localhost:4000/registerMatch', {
             method: 'POST',
-            body: datos
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify(datos)
         })
             .then(response => response.json())
             .then(data => {
@@ -116,12 +132,18 @@ export default function MatchesPage() {
                         let info = {id_refugio: mascotaElegida.id_refugio, id_pet: mascotaElegida.id_mascota};
                         fetch('http://localhost:4000/newChat', {
                             method: 'POST',
-                            body: info
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            credentials: "include",
+                            body: JSON.stringify(info)
                         })
                             .then(res => res.json())
                             .then(rta => {
                                 if (rta === -1) {
                                     setError("Ha ocurrido un error, intente denuevo más tarde.");
+                                } else {
+                                    cargarMatches();
                                 }
                             })
                     }
@@ -131,11 +153,11 @@ export default function MatchesPage() {
     }
 
     useEffect(() => {
-        setMascotasFiltradas(mascotas.filter(pet => {pet.estado === "Disponible"}));
+        setMascotasFiltradas(mascotas.filter(pet => pet.estado === "Disponible"));
         if (matches) {
-            setMascotasFiltradas(mascotas.filter(pet => {
-                matches.every(match => match.id_mascota !== pet.id_mascota);
-            }))
+            setMascotasFiltradas(mascotas.filter(pet => 
+                matches.every(match => match.id_mascota !== pet.id_mascota)
+            ))
         }
         if (especie) {
             setMascotasFiltradas(mascotas.filter(pet => pet.especie === especie));
@@ -153,11 +175,11 @@ export default function MatchesPage() {
             setMascotasFiltradas(mascotasFiltradas.filter(pet => pet.sexo === sexo));
         }
         if (carFiltro) {
-            setMascotasFiltradas(mascotasFiltradas.filter(pet => {
-                carFiltro.every((id_car) => {
-                    carPorMascota.some((car) => car.id_mascota === pet.id_mascota && car.id_caracteristica === id_car);
-                })
-            }));
+            setMascotasFiltradas(mascotasFiltradas.filter(pet => 
+                carFiltro.every((id_car) =>
+                    carPorMascota.some((car) => car.id_mascota === pet.id_mascota && car.id_caracteristica === id_car)
+                )
+            ));
         }
         if (!mascotasFiltradas.includes(mascotaElegida)) {
             cargarMascotaRandom();
@@ -165,7 +187,9 @@ export default function MatchesPage() {
     }, [matches, especie, raza, edadMax, edadMin, sexo, carFiltro])
 
     const cerrarSesion = () => {
-        fetch('http://localhost:4000/cierreSesion')
+        fetch('http://localhost:4000/cierreSesion', {
+            credentials: "include"
+        })
             .then(response => response.json())
             .then(data => {
                 if (data === 0) {
@@ -190,6 +214,7 @@ export default function MatchesPage() {
             </div>
             <div>
                 <div>
+                    {error && (<p>{error}</p>)}
                     <div>
                         <h1>Encontrá a tu compañero</h1>
                         <p>Deslizá y likeá para encontrar a tu amigo ideal</p>
@@ -212,53 +237,58 @@ export default function MatchesPage() {
                     <label>Caracteristicas</label>
                     <Popup trigger={<Button text={abierto ? "Cerrar" : "Seleccionar..."}></Button>} onOpen={() => setAbierto(true)} onClose={() => setAbierto(false)}>
                         {caracteristicas.map(car => (
-                            <div>
+                            <div key={car.id_caracteristica}>
                                 <Checkbox id={car.id_caracteristica} text={car.descripcion} change={cambiarCaracteristicas}></Checkbox>
                             </div>
                         ))}
                     </Popup>
                 </div>
-                {error && (<p>{error}</p>)}
                 <div>
-                    <img src={`http://localhost:4000${mascotaElegida.foto}`} alt="Foto mascota"></img>
-                    <div>
-                        <h3>{mascotaElegida.nombre}</h3>
-                        <div>
-                            <img></img>
-                            <p>{mascotaElegida.especie} - {mascotaElegida.raza}</p>
-                        </div>
-                        <div>
+                    {mascotaElegida ? (
+                        <>
+                            <img src={`http://localhost:4000${mascotaElegida.foto}`} alt="Foto mascota"></img>
                             <div>
-                                <img></img>
-                                <p>{mascotaElegida.edad} años</p>
-                            </div>
-                            {mascotaElegida.sexo === "F" ? (
+                                <h3>{mascotaElegida.nombre}</h3>
                                 <div>
                                     <img></img>
-                                    <p>Hembra</p>
+                                    <p>{mascotaElegida.especie} - {mascotaElegida.raza}</p>
                                 </div>
-                            ) : (
                                 <div>
-                                    <img></img>
-                                    <p>Macho</p>
+                                    <div>
+                                        <img></img>
+                                        <p>{mascotaElegida.edad} años</p>
+                                    </div>
+                                    {mascotaElegida.sexo === "F" ? (
+                                        <div>
+                                            <img></img>
+                                            <p>Hembra</p>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <img></img>
+                                            <p>Macho</p>
+                                        </div>
+                                    )}
+                                    <p>{mascotaElegida.descripcion}</p>
+                                    <div>
+                                        <h4>Caracteristicas</h4>
+                                        <ul>
+                                            {carPorMascota.filter(car => car.id_mascota === mascotaElegida.id_mascota).map(car => (
+                                                <li key={car.id_caracteristica}>{car.descripcion}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    <p>{mascotaElegida.nombre_refugio}</p>
+                                    <div>
+                                        <Button text={"Pasar"} funcion={() => guardarMatch(false)}></Button>
+                                        <Button text={"Me interesa"} funcion={() => guardarMatch(true)}></Button>
+                                    </div>
                                 </div>
-                            )}
-                            <p>{mascotaElegida.descripcion}</p>
-                            <div>
-                                <h4>Caracteristicas</h4>
-                                <ul>
-                                    {carPorMascota.filter(car => car.id_mascota === mascotaElegida.id_mascota).map(car => (
-                                        <li key={car.id_caracteristica}>{car.descripcion}</li>
-                                    ))}
-                                </ul>
                             </div>
-                            <p>{mascotaElegida.nombre_refugio}</p>
-                            <div>
-                                <Button text={"Pasar"} funcion={() => guardarMatch(false)}></Button>
-                                <Button text={"Me interesa"} funcion={() => guardarMatch(true)}></Button>
-                            </div>
-                        </div>
-                    </div>
+                        </>
+                    ) : (
+                        <p>No hay ninguna mascota disponible.</p>
+                    )}
                 </div>
             </div>
         </main>

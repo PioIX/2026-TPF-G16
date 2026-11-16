@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import useSocket from "@/hooks/useSocket";
 import ChatList from "@/components/ChatList";
 import Chat from "@/components/Chat";
@@ -18,6 +19,7 @@ export default function ChatsPage() {
 
     const [errorCierre, setErrorCierre] = useState("");
     const { socket, isConnected } = useSocket();
+    const router = useRouter();
 
     useEffect(() => {
         cargarChats()
@@ -36,7 +38,9 @@ export default function ChatsPage() {
     }, [socket, isConnected]);
 
     const cargarChats = () => {
-        fetch('http://localhost:4000/chats')
+        fetch('http://localhost:4000/chats', {
+            credentials: "include"
+        })
             .then(response => response.json())
             .then(data => {
                 if (data === -1) {
@@ -48,7 +52,7 @@ export default function ChatsPage() {
     }
     const selectChat = (id_chat) => {
         chats.forEach(chat => {
-            if (chat.id_chat = id_chat) {
+            if (Number(chat.id_chat) === Number(id_chat)) {
                 setChatElegido(chat);
                 if (socket) {
                     socket.emit('joinRoom', { room: id_chat })
@@ -64,12 +68,16 @@ export default function ChatsPage() {
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: "include",
             body: JSON.stringify(datos)
         })
         .then(response => response.json())
         .then(data => {
             if (data === -1) {
                 setError("Ha ocurrido un error, intente denuevo más tarde.");
+            } else {
+                cargarChats();
+                setChatElegido(null);
             }
         });
     }
@@ -80,24 +88,31 @@ export default function ChatsPage() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: "include",
                 body: JSON.stringify(datos)
             })
         .then(response => response.json())
         .then(data => {
             if (data === -1) {
                 setError("Ha ocurrido un error, intente denuevo más tarde.");
+            } else {
+                cargarChats();
+                setChatElegido(null);
             }
         });
     }
     const enviarMsj = () => {
-        if (msj) {
+        if (msj.trim() !== "" && socket && chatElegido) {
             socket.emit('sendMessage', msj)
             setMsj("");
+            setMensajes([...mensajes, msj])
         }
     }
 
     useEffect(() => {
-        fetch(`http://localhost:4000/mensajes/${chatElegido.id_chat}`)
+        fetch(`http://localhost:4000/mensajes/${chatElegido.id_chat}`, {
+            credentials: "include"
+        })
             .then(response => response.json())
             .then(data => {
                 if (data === -1) {
@@ -109,7 +124,9 @@ export default function ChatsPage() {
     }, [chatElegido])
 
     const cerrarSesion = () => {
-        fetch('http://localhost:4000/cierreSesion')
+        fetch('http://localhost:4000/cierreSesion', {
+            credentials: "include"
+        })
             .then(response => response.json())
             .then(data => {
                 if (data === 0) {

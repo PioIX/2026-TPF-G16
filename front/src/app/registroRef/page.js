@@ -17,7 +17,7 @@ export default function Registro() {
     const router = useRouter();
 
     const registrarse = () => {
-        if (nombre.trim() === "" || mail.trim() === "" || password === "" || direccion.trim() === "" || telefono.trim() === "") {
+        if (nombre.trim() === "" || mail.trim() === "" || password.trim() === "" || direccion.trim() === "" || telefono.trim() === "") {
             setError("Debes completar todos los campos para ingresar.");
         } else {
             const datos = new FormData();
