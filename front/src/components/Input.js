@@ -10,7 +10,7 @@ export default function Input({ type, text, placeholder, change}) {
     return(
         <div>
             <h3>{text}</h3>
-            <input type={type} placeholder={placeholder} onChange={cambio}></input>
+            <input type={type} placeholder={type !== "file" ? placeholder : undefined} onChange={cambio}></input>
         </div>
     )
 }

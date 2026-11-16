@@ -17,17 +17,26 @@ export default function Login() {
 
     const iniciarSesion = () => {
         const datos = {user: tipo, mail: mail, password: password};
-        fetch(`http://localhost:4000/adoptar`, {
+        fetch(`http://localhost:4000/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: "include",
             body: JSON.stringify(datos)
         })
         .then(response => response.json())
         .then(data => {
-            if (data === -1) {
+            if (data === 0) {
+                setError("Mail o contraseña incorrecta.")
+            } else if (data === -1) {
                 setError("Ha ocurrido un error, intente denuevo más tarde.");
+            } else {
+                if (tipo === "usuario") {
+                    router.push("/matches");
+                } else {
+                    router.push("/mascotas");
+                }
             }
         });
     };
@@ -79,10 +88,17 @@ export default function Login() {
 
                 <div className="footer-account">
                     <p className="footer-text">¿No tenés una cuenta?</p>
-                    <Button
-                        text={"Registrate aquí"}
-                        funcion={() => router.push("/registroUser")}
-                    />
+                    {tipo === "usuario" ? (
+                        <Button
+                            text={"Registrate aquí"}
+                            funcion={() => router.push("/registroUser")}
+                        />
+                    ) : (
+                        <Button
+                            text={"Registrate aquí"}
+                            funcion={() => router.push("/registroRef")}
+                        />
+                    )}
                 </div>
             </div>
         </main>
