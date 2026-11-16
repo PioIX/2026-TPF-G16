@@ -196,14 +196,11 @@ export default function MatchesPage() {
                         <h1>Encontrá a tu compañero</h1>
                         <p>Deslizá y likeá para encontrar a tu amigo ideal</p>
                     </div>
-<<<<<<< Updated upstream
                     <Button text={"Cerrar sesión"} funcion={() => {setConfirmacion(true)}}></Button>
                     {confirmacion && (
                         <div>
-=======
                     <Popup trigger={<Button text={abierto ? "Volver" : "Cerrar Sesión"}></Button>}>
                         <div className="popup-box">
->>>>>>> Stashed changes
                             <p>¿Estás seguro de que quieres cerrar sesión?</p>
                             <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
                             <Button text={"Volver"} funcion={() => {setConfirmacion(false)}}></Button>
@@ -227,14 +224,11 @@ export default function MatchesPage() {
                         ))}
                     </Popup>
                 </div>
-<<<<<<< Updated upstream
                 <div>
                     <img src={mascotaElegida.foto} alt="Foto mascota"></img>
-=======
                 {error && (<p className="error-message">{error}</p>)}
                 <div className="pet-card">
                     <img src={mascotaElegida.foto} alt="Foto mascota" className="pet-card-img"></img>
->>>>>>> Stashed changes
                     <div>
                         <h3>{mascotaElegida.nombre}</h3>
                         <div className="pet-species-row">
