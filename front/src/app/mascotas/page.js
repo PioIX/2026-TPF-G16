@@ -24,6 +24,7 @@ export default function MascotasPage() {
     
     const [caracteristicas, setCaracteristicas] = useState([]);
     const [error, setError] = useState("");
+    const [errorRegistro, setErrorRegistro] = useState("");
     const [errorCierre, setErrorCierre] = useState("");
 
     const router = useRouter();
@@ -47,7 +48,11 @@ export default function MascotasPage() {
         let datos = {mascotas: pets};
         fetch('http://localhost:4000/carPorMascota', {
             method: 'POST',
-            body: datos
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify(datos)
         })
             .then(response => response.json())
             .then(data => {
@@ -59,9 +64,17 @@ export default function MascotasPage() {
             });
     }
     const cargarCaracteristicas = () => {
-        fetch('http://localhost:4000/caracteristicas')
+        fetch('http://localhost:4000/caracteristicas', {
+            credentials: "include"
+        })
             .then(response => response.json())
-            .then(data => setCaracteristicas(data))
+            .then(data => {
+                if (data === -1) {
+                    setError("Ha ocurrido un error, intente denuevo más tarde.");
+                } else {
+                    setCaracteristicas(data);
+                }
+            });
     }
     useEffect(() => {
         cargarMascotas();
@@ -69,6 +82,7 @@ export default function MascotasPage() {
     }, []);
 
     const cambiarCaracteristicas = (bool, id_car) => {
+        id_car = Number(id_car);
         if (bool) {
             if (!carMascota.includes(id_car)) {
                 setCarMascota([...carMascota, id_car]);
@@ -81,49 +95,69 @@ export default function MascotasPage() {
     }
 
     const mascotaNueva = () => {
-        const datos = new FormData();
+        if (nombre.trim() === "" || especie.trim() === "" || raza.trim() === "" || edad === undefined || sexo.trim() === "" || descripcion.trim() === "" || foto === undefined) {
+            setErrorRegistro("Debes completar todos los campos.");
+        } else {
+            const datos = new FormData();
 
-        datos.append("nombre", nombre);
-        datos.append("especie", especie);
-        datos.append("raza", raza);
-        datos.append("edad", edad);
-        datos.append("sexo", sexo);
-        datos.append("desc", descripcion);
-        datos.append("foto", foto);
+            datos.append("nombre", nombre);
+            datos.append("especie", especie);
+            datos.append("raza", raza);
+            datos.append("edad", edad);
+            datos.append("sexo", sexo);
+            datos.append("desc", descripcion);
+            datos.append("foto", foto);
 
-        fetch('http://localhost:4000/registerPet', {
-            method: 'POST',
-            body: datos
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data === 0){
-                    setError("Ya tienes registrada una mascota con ese nombre.");
-                } else if (data === -1) {
-                    setError("Ha ocurrido un error, intente denuevo más tarde.");
-                } else {
-                    guardarCaracteristicas(data);
-                }
-            });
+            fetch('http://localhost:4000/registerPet', {
+                method: 'POST',
+                credentials: "include",
+                body: datos
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data === 0){
+                        setError("Ya tienes registrada una mascota con ese nombre.");
+                    } else if (data === -1) {
+                        setError("Ha ocurrido un error, intente denuevo más tarde.");
+                    } else {
+                        guardarCaracteristicas(data);
+                    }
+                });
+        }
     }
     const guardarCaracteristicas = (id_pet) => {
         const datos = {id_pet: id_pet, car: carMascota};
         fetch('http://localhost:4000/registerCar', {
             method: 'POST',
-            body: datos
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify(datos)
         })
             .then(response => response.json())
             .then(data => {
                 if (data === -1) {
                     setError("Ha ocurrido un error, intente denuevo más tarde.");
                 } else {
+                    setCarMascota([]);
+                    setNombre("");
+                    setEspecie("");
+                    setRaza("");
+                    setEdad(null);
+                    setSexo("");
+                    setDescripcion("");
+                    setFoto(null);
+
                     cargarMascotas();
                 }
             });
     }
 
     const cerrarSesion = () => {
-        fetch('http://localhost:4000/cierreSesion')
+        fetch('http://localhost:4000/cierreSesion', {
+            credentials: "include"
+        })
             .then(response => response.json())
             .then(data => {
                 if (data === 0) {
@@ -148,11 +182,12 @@ export default function MascotasPage() {
             </div>
             <div>
                 <div>
+                    {error && (<p>{error}</p>)}
                     <div>
                         <h1>Tus mascotas</h1>
                         <p>Visualiza las mascotas ingresadas</p>
                     </div>
-                    <Popup trigger={<Button text={abierto ? "Volver" : "Cerrar Sesión"}></Button>}>
+                    <Popup trigger={<Button text={"Cerrar Sesión"}></Button>}>
                         <div>
                             <p>¿Estás seguro de que quieres cerrar sesión?</p>
                             <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
@@ -163,7 +198,7 @@ export default function MascotasPage() {
                 <div>
                     <h2>Mascotas</h2>
                     {mascotas.map(pet => (
-                        <div>
+                        <div key={pet.id_mascota}>
                             <img src={`http://localhost:4000${pet.foto}`} alt="Foto mascota"></img>
                             <div>
                                 <h3>{pet.nombre}</h3>
@@ -191,7 +226,7 @@ export default function MascotasPage() {
                                     <div>
                                         <h4>Caracteristicas</h4>
                                         <ul>
-                                            {carPorMascota.filter(car => car.id_mascota === pet.id_mascota).map(car => (
+                                            {carPorMascota.filter(car => Number(car.id_mascota) === Number(pet.id_mascota)).map(car => (
                                                 <li key={car.id_caracteristica}>{car.descripcion}</li>
                                             ))}
                                         </ul>
@@ -218,13 +253,13 @@ export default function MascotasPage() {
                             <div>
                                 <label>Caracteristicas</label>
                                 {caracteristicas.map(car => (
-                                    <div>
-                                        <Checkbox id={car.id_caracteristica} text={car.descripcion} change={cambiarCaracteristicas}></Checkbox>
+                                    <div key={car.id_caracteristica}>
+                                        <Checkbox text={car.descripcion} change={cambiarCaracteristicas}></Checkbox>
                                     </div>
                                 ))}
                             </div>
                             <Button text={"Registrar mascota"} funcion={mascotaNueva}></Button>
-                            {error && (<p>{error}</p>)}
+                            {errorRegistro && (<p>{errorRegistro}</p>)}
                         </div>
                     </Popup>
                 </div>
