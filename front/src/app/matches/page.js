@@ -179,26 +179,31 @@ export default function MatchesPage() {
     }
 
     return(
-        <main>
-            <div>
-                <div>
-                    <img></img>
+        <main className="matches-main">
+            <div className="matches-sidebar">
+                <div className="sidebar-brand">
+                    <img className="logo-img"></img>
                     <h2>PetMatch</h2>
                 </div>
-                <div>
+                <div className="sidebar-menu">
                     <Button text={"Matches"} funcion={() => {router.push("/matches")}}></Button>
                     <Button text={"Chats"} funcion={() => {router.push("/chats")}}></Button>
                 </div>
             </div>
-            <div>
-                <div>
-                    <div>
+            <div className="matches-body">
+                <div className="matches-topbar">
+                    <div className="topbar-titles">
                         <h1>Encontrá a tu compañero</h1>
                         <p>Deslizá y likeá para encontrar a tu amigo ideal</p>
                     </div>
+<<<<<<< Updated upstream
                     <Button text={"Cerrar sesión"} funcion={() => {setConfirmacion(true)}}></Button>
                     {confirmacion && (
                         <div>
+=======
+                    <Popup trigger={<Button text={abierto ? "Volver" : "Cerrar Sesión"}></Button>}>
+                        <div className="popup-box">
+>>>>>>> Stashed changes
                             <p>¿Estás seguro de que quieres cerrar sesión?</p>
                             <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
                             <Button text={"Volver"} funcion={() => {setConfirmacion(false)}}></Button>
@@ -206,7 +211,7 @@ export default function MatchesPage() {
                     )}
                     {errorCierre && (<p>{errorCierre}</p>)}
                 </div>
-                <div>
+                <div className="matches-filters">
                     <h4>Filtros</h4>
                     <Select text={"Especie"} change={setEspecie} options={["Perro", "Gato", "Pajaro", "Conejo"]}></Select>
                     <Input type={"text"} text={"Raza"} placeholder={"Ingrese la raza"} change={setRaza}></Input>
@@ -216,38 +221,44 @@ export default function MatchesPage() {
                     <label>Caracteristicas</label>
                     <Popup trigger={<Button text={abierto ? "Cerrar" : "Seleccionar..."}></Button>} onOpen={() => setAbierto(true)} onClose={() => setAbierto(false)}>
                         {caracteristicas.map(car => (
-                            <div>
+                            <div key={car.id_caracteristica} className="popup-check-item">
                                 <Checkbox id={car.id_caracteristica} text={car.descripcion} change={cambiarCaracteristicas}></Checkbox>
                             </div>
                         ))}
                     </Popup>
                 </div>
+<<<<<<< Updated upstream
                 <div>
                     <img src={mascotaElegida.foto} alt="Foto mascota"></img>
+=======
+                {error && (<p className="error-message">{error}</p>)}
+                <div className="pet-card">
+                    <img src={mascotaElegida.foto} alt="Foto mascota" className="pet-card-img"></img>
+>>>>>>> Stashed changes
                     <div>
                         <h3>{mascotaElegida.nombre}</h3>
-                        <div>
+                        <div className="pet-species-row">
                             <img></img>
                             <p>{mascotaElegida.especie} - {mascotaElegida.raza}</p>
                         </div>
-                        <div>
-                            <div>
+                        <div className="pet-info-stack">
+                            <div className="pet-stat">
                                 <img></img>
                                 <p>{mascotaElegida.edad} años</p>
                             </div>
                             {mascotaElegida.sexo === "F" ? (
-                                <div>
+                                <div className="pet-stat">
                                     <img></img>
                                     <p>Hembra</p>
                                 </div>
                             ) : (
-                                <div>
+                                <div className="pet-stat">
                                     <img></img>
                                     <p>Macho</p>
                                 </div>
                             )}
-                            <p>{mascotaElegida.descripcion}</p>
-                            <div>
+                            <p className="pet-desc">{mascotaElegida.descripcion}</p>
+                            <div className="pet-traits">
                                 <h4>Caracteristicas</h4>
                                 <ul>
                                     {carPorMascota.filter(car => car.id_mascota === mascotaElegida.id_mascota).map(car => (
@@ -255,8 +266,8 @@ export default function MatchesPage() {
                                     ))}
                                 </ul>
                             </div>
-                            <p>{mascotaElegida.nombre_refugio}</p>
-                            <div>
+                            <p className="pet-shelter">{mascotaElegida.nombre_refugio}</p>
+                            <div className="pet-buttons">
                                 <Button text={"Pasar"} funcion={() => guardarMatch(false)}></Button>
                                 <Button text={"Me interesa"} funcion={() => guardarMatch(true)}></Button>
                             </div>
