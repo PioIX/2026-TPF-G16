@@ -29,15 +29,22 @@ export default function MascotasPage() {
     const router = useRouter();
 
     const cargarMascotas = () => {
-        fetch('http://localhost:4000/mascotas')
+        fetch('http://localhost:4000/mascotas',
+            {
+                credentials: "include"
+            })
             .then(response => response.json())
             .then(data => {
-                setMascotas(data);
-                cargarCarPorMascota();
+                if (data === -1) {
+                    setError("Ha ocurrido un error, intente denuevo más tarde.")
+                } else {
+                    setMascotas(data);
+                    cargarCarPorMascota(data);
+                }
             })
     }
-    const cargarCarPorMascota = () => {
-        let datos = {mascotas: mascotas};
+    const cargarCarPorMascota = (pets) => {
+        let datos = {mascotas: pets};
         fetch('http://localhost:4000/carPorMascota', {
             method: 'POST',
             body: datos
@@ -157,7 +164,7 @@ export default function MascotasPage() {
                     <h2>Mascotas</h2>
                     {mascotas.map(pet => (
                         <div>
-                            <img src={pet.foto} alt="Foto mascota"></img>
+                            <img src={`http://localhost:4000${pet.foto}`} alt="Foto mascota"></img>
                             <div>
                                 <h3>{pet.nombre}</h3>
                                 <div>

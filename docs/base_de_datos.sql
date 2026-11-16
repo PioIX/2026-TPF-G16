@@ -4,7 +4,7 @@ nombre varchar(255),
 apellido varchar(255),
 mail varchar(255),
 contraseña varchar(255),
-foto varchar(300),
+foto varchar(300) null,
 PRIMARY KEY (id_usuario)
 );
 
@@ -13,7 +13,7 @@ id_refugio int auto_increment unique not null,
 nombre varchar(255),
 mail varchar(255),
 contraseña varchar(255),
-foto varchar(300),
+foto varchar(300) null,
 direccion varchar(255),
 telefono int,
 PRIMARY KEY (id_refugio)
@@ -70,8 +70,8 @@ FOREIGN KEY (id_mascota) REFERENCES Mascotas(id_mascota)
 CREATE TABLE IF NOT EXISTS Mensajes(
 id_mensaje int auto_increment unique not null,
 id_chat int,
-id_usuario int,
-id_refugio int,
+id_usuario int null,
+id_refugio int null,
 texto varchar(255),
 fecha_envio datetime,
 PRIMARY KEY (id_mensaje),

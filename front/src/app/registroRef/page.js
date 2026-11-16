@@ -11,35 +11,42 @@ export default function Registro() {
     const [password, setPassword] = useState("");
     const [foto, setFoto] = useState(null);
     const [direccion, setDireccion] = useState("");
-    const [telefono, setTelefono] = useState(null);
+    const [telefono, setTelefono] = useState("");
     const [error, setError] = useState("");
 
     const router = useRouter();
 
     const registrarse = () => {
-        const datos = new FormData();
+        if (nombre.trim() === "" || mail.trim() === "" || password === "" || direccion.trim() === "" || telefono.trim() === "") {
+            setError("Debes completar todos los campos para ingresar.");
+        } else {
+            const datos = new FormData();
 
-        datos.append("nombre", nombre);
-        datos.append("mail", mail);
-        datos.append("password", password);
-        datos.append("foto", foto);
-        datos.append("direccion", direccion);
-        datos.append("telefono", telefono);
+            datos.append("nombre", nombre);
+            datos.append("mail", mail);
+            datos.append("password", password);
+            if (foto) {
+                datos.append("foto", foto);
+            }
+            datos.append("direccion", direccion);
+            datos.append("telefono", telefono);
 
-        fetch('http://localhost:4000/registerRef', {
-            method: 'POST',
-            body: datos
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data === 0){
-                    setError("Ya existe una cuenta con este mail, intente denuevo.");
-                } else if (data === -1) {
-                    setError("Ha ocurrido un error, intente denuevo más tarde.");
-                } else {
-                    router.replace(`/matches?user=refugio`);
-                }
-            });
+            fetch('http://localhost:4000/registerRef', {
+                method: 'POST',
+                credentials: "include",
+                body: datos
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data === 0){
+                        setError("Ya existe una cuenta con este mail, intente denuevo.");
+                    } else if (data === -1) {
+                        setError("Ha ocurrido un error, intente denuevo más tarde.");
+                    } else {
+                        router.replace(`/mascotas`);
+                    }
+                });
+        }
     }
 
     return(

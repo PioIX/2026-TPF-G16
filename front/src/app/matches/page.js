@@ -220,7 +220,7 @@ export default function MatchesPage() {
                 </div>
                 {error && (<p>{error}</p>)}
                 <div>
-                    <img src={mascotaElegida.foto} alt="Foto mascota"></img>
+                    <img src={`http://localhost:4000${mascotaElegida.foto}`} alt="Foto mascota"></img>
                     <div>
                         <h3>{mascotaElegida.nombre}</h3>
                         <div>
