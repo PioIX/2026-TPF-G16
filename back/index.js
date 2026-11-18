@@ -49,7 +49,7 @@ const storage = multer.diskStorage({
         cb(null, "uploads/");
     },
     filename: function (req, file, cb) {
-        const extension = path.estname(file.originalname);
+        const extension = path.extname(file.originalname);
         const nombreArchivo = crypto.randomUUID() + extension;
         cb(null, nombreArchivo);
     }
@@ -103,7 +103,7 @@ app.post('/login', async function(req, res) {
 app.post('/registerUser', upload.single("foto"), async function(req, res) {
     try {
         console.log(req.body) ;
-        const foto = null;
+        let foto = null;
         if (req.file) {
             foto = "/uploads/" + req.file.filename;
         }
@@ -128,11 +128,9 @@ app.post('/registerUser', upload.single("foto"), async function(req, res) {
 // registro refugio
 app.post('/registerRef', upload.single("foto"), async function(req, res) {
     try {
+        console.log("Se recibió una petición de registro");
         console.log(req.body) ;
-        const foto = null;
-        if (req.file) {
-            foto = "/uploads/" + req.file.filename;
-        }
+        const foto = req.file ? "/uploads/" + req.file.filename : null;
         let existe = await realizarQuery(`SELECT * FROM Refugios WHERE mail = "${req.body.mail}"`) ;
         if (existe.length > 0) {
             res.json(0);
@@ -184,7 +182,7 @@ app.get('/mascotas', async function(req, res) {
 app.post('/registerPet', upload.single("foto"), async function(req, res) {
     try {
         console.log(req.body) ;
-        const foto = null;
+        let foto = null;
         if (req.file) {
             foto = "/uploads/" + req.file.filename;
         }

@@ -11,13 +11,13 @@ export default function Registro() {
     const [password, setPassword] = useState("");
     const [foto, setFoto] = useState(null);
     const [direccion, setDireccion] = useState("");
-    const [telefono, setTelefono] = useState("");
+    const [telefono, setTelefono] = useState(null);
     const [error, setError] = useState("");
 
     const router = useRouter();
 
     const registrarse = () => {
-        if (nombre.trim() === "" || mail.trim() === "" || password.trim() === "" || direccion.trim() === "" || telefono.trim() === "") {
+        if (nombre.trim() === "" || mail.trim() === "" || password.trim() === "" || direccion.trim() === "" || telefono === undefined) {
             setError("Debes completar todos los campos para ingresar.");
         } else {
             const datos = new FormData();
@@ -65,12 +65,12 @@ export default function Registro() {
                     <p>¡Gracias por visitar!</p>
                 </div>
                 <div>
-                    <Input type={"text"} text={"Nombre"} placeholder={"Ingrese su nombre"} change={setNombre}></Input>
+                    <Input type={"text"} text={"Nombre"} placeholder={"Ingrese el nombre del refugio"} change={setNombre}></Input>
                     <Input type={"email"} text={"Mail"} placeholder={"ejemplo@gmail.com"} change={setMail}></Input>
                     <Input type={"password"} text={"Contraseña"} placeholder={"Ingrese su contraseña"} change={setPassword}></Input>
                     <Input type={"file"} text={"Foto de perfil"} placeholder={"Suba su foto de perfil (OPCIONAL)"} change={setFoto}></Input>
                     <Input type={"text"} text={"Direccion"} placeholder={"Ingrese su direccion"} change={setDireccion}></Input>
-                    <Input type={"tel"} text={"Telefono"} placeholder={"Ingrese su telefono"} change={setTelefono}></Input>
+                    <Input type={"tel"} text={"Telefono"} placeholder={"Ingrese su telefono (+54)"} change={setTelefono}></Input>
                     <Button text={"Registrarse"} funcion={registrarse}></Button>
                     {error && (<p>{error}</p>)}
                 </div>
