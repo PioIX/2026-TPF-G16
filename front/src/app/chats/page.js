@@ -110,6 +110,7 @@ export default function ChatsPage() {
     }
 
     useEffect(() => {
+        if (!chatElegido) return;
         fetch(`http://localhost:4000/mensajes/${chatElegido.id_chat}`, {
             credentials: "include"
         })
@@ -150,7 +151,7 @@ export default function ChatsPage() {
                 </div>
             </div>
             <div>
-                <Popup trigger={<Button text={abierto ? "Volver" : "Cerrar Sesión"}></Button>}>
+                <Popup trigger={<Button text={"Cerrar Sesión"}></Button>}>
                     <div>
                         <p>¿Estás seguro de que quieres cerrar sesión?</p>
                         <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
@@ -160,15 +161,15 @@ export default function ChatsPage() {
                 <div>
                     <div>
                         <h1>Tus chats</h1>
-                        {chats.map(chat => {
-                            <ChatList chat={chat} funcion={selectChat}></ChatList>
-                        })}
+                        {chats.map(chat => (
+                            <ChatList key={chat.id_chat} chat={chat} funcion={selectChat}></ChatList>
+                        ))}
                     </div>
                     <div>
                         {error && (<p>{error}</p>)}
                         {chatElegido && (
                             <>
-                                (usuario.type === "refugio" ? (
+                                {usuario.type === "refugio" ? (
                                     <div>
                                         <Button text={"Marcar como adoptado"} funcion={adoptar}></Button>
                                         <Button text={"Eliminar chat"} funcion={eliminar}></Button>
@@ -177,8 +178,8 @@ export default function ChatsPage() {
                                     (chatElegido.estado === "Adoptado" && (
                                         <Button text={"Eliminar chat"} funcion={eliminar}></Button>
                                     ))
-                                ))
-                                <Chat mensajes={mensajes} tipoUser={usuario.type} change={setMsj} funcion={enviarMsj}></Chat>
+                                )}
+                                <Chat mensajes={mensajes} tipoUser={usuario.type}  change={setMsj} funcion={enviarMsj}></Chat>
                             </>
                         )}
                     </div>
