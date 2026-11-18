@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "npm start",
+    "pio" : "npm run pio",
+    "home": "npm run home"
+  },
+  "dependencies": {
+    "body-parser": "^2.4.0",
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "express-session": "^1.19.0",
+    "multer": "^2.5.0",
+    "mysql2": "^3.24.6",
+    "socket.io": "^4.8.4"
+  }
+}
