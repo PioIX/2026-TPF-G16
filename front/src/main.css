@@ -641,3 +641,425 @@ body {
 .footer-account button:hover {
   text-decoration: underline;
 }
+
+/* =========================================
+   ESTILOS MATCHES (ESTRUCTURA EXACTA)
+   ========================================= */
+
+.matches-main {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+}
+
+/* --- Barra Lateral Izquierda --- */
+.matches-sidebar {
+  width: 240px;
+  background-color: #FAF3EE;
+  border-right: 1px solid var(--border-color);
+  padding: 2rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding-left: 0.5rem;
+}
+
+.sidebar-brand h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-menu button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sidebar-menu button:first-child {
+  background-color: #F4E6E1;
+  color: var(--text-main);
+}
+
+.sidebar-menu button:hover {
+  background-color: rgba(224, 139, 139, 0.15);
+  color: var(--text-main);
+}
+
+/* --- Contenido Principal Derecho --- */
+.matches-body {
+  flex: 1;
+  padding: 2rem 3rem;
+  max-width: 1150px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  box-sizing: border-box;
+}
+
+/* --- Encabezado Superior --- */
+.matches-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.topbar-titles h1 {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0 0 0.35rem 0;
+}
+
+.topbar-titles p {
+  font-size: 0.92rem;
+  color: var(--text-sub);
+  margin: 0;
+}
+
+.matches-topbar > button {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.55rem 1.15rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.matches-topbar > button:hover {
+  border-color: var(--btn-primary);
+}
+
+/* --- Barra de Filtros Horizontal --- */
+.matches-filters {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 1.15rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.85rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.matches-filters > h4 {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  margin: 0 0.75rem 0.5rem 0;
+  align-self: center;
+}
+
+/* Contenedores internos de tus componentes <Select /> e <Input /> */
+.matches-filters > div {
+  flex: 1;
+  min-width: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.matches-filters h3,
+.matches-filters > label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-sub);
+  margin: 0;
+}
+
+.matches-filters input,
+.matches-filters select,
+.matches-filters > button {
+  width: 100%;
+  height: 36px;
+  padding: 0.45rem 0.75rem;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  font-size: 0.82rem;
+  color: var(--text-main);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.matches-filters > button {
+  width: auto;
+  min-width: 130px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.matches-filters input:focus,
+.matches-filters select:focus,
+.matches-filters > button:hover {
+  border-color: var(--btn-primary);
+}
+
+/* --- Tarjeta Central de la Mascota --- */
+.pet-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 1.75rem;
+  display: flex;
+  gap: 2rem;
+  max-width: 780px;
+  width: 100%;
+  margin: 0.5rem auto;
+  box-shadow: 0 6px 20px rgba(58, 45, 40, 0.04);
+  box-sizing: border-box;
+}
+
+.pet-card-img {
+  width: 320px;
+  min-height: 360px;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 18px;
+  background-color: var(--border-color);
+  flex-shrink: 0;
+}
+
+.pet-card-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.pet-card-details h3 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.pet-species-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  font-weight: 500;
+}
+
+.pet-species-row p {
+  margin: 0;
+}
+
+/* --- Bloque inferior dentro de la tarjeta --- */
+.pet-info-stack {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  flex: 1;
+}
+
+/* Edad y Sexo en la misma línea */
+.pet-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  font-weight: 500;
+}
+
+.pet-stat p {
+  margin: 0;
+}
+
+/* Ocultar los <img> vacíos si aún no tienen src */
+.pet-species-row img:not([src]),
+.pet-stat img:not([src]) {
+  display: none;
+}
+
+/* Descripción ocupa todo el ancho */
+.pet-desc {
+  width: 100%;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-sub);
+  margin: 0.25rem 0;
+}
+
+/* Características (badges) */
+.pet-traits {
+  width: 100%;
+}
+
+.pet-traits h4 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 0.5rem 0;
+}
+
+.pet-traits ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.pet-traits li {
+  background-color: #F7ECE6;
+  color: var(--text-main);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 50px;
+}
+
+/* Caja del Refugio */
+.pet-shelter {
+  width: 100%;
+  background-color: #FAF3EE;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* Botones Pasar y Me interesa */
+.pet-buttons {
+  width: 100%;
+  display: flex;
+  gap: 0.85rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.pet-buttons button:first-child {
+  flex: 1;
+  height: 46px;
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-color);
+  color: var(--text-sub);
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pet-buttons button:first-child:hover {
+  background-color: #F7F2EE;
+  color: var(--text-main);
+}
+
+.pet-buttons button:last-child {
+  flex: 2;
+  height: 46px;
+  background-color: var(--btn-primary);
+  border: none;
+  color: #FFFFFF;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pet-buttons button:last-child:hover {
+  background-color: var(--btn-hover);
+}
+
+/* --- Popups --- */
+.popup-content {
+  border-radius: 16px !important;
+  border: 1px solid var(--border-color) !important;
+  background-color: var(--bg-card) !important;
+  padding: 1rem !important;
+  box-shadow: 0 8px 24px rgba(58, 45, 40, 0.12) !important;
+}
+
+.popup-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+.popup-box p {
+  margin: 0;
+}
+
+.popup-box button {
+  background-color: var(--btn-primary);
+  color: #fff;
+  border: none;
+  padding: 0.55rem 1rem;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.popup-check-item {
+  padding: 0.25rem 0;
+  font-size: 0.85rem;
+}
+
+/* --- Responsive --- */
+@media (max-width: 850px) {
+  .matches-main {
+    flex-direction: column;
+  }
+  .matches-sidebar {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+  }
+  .sidebar-menu {
+    flex-direction: row;
+  }
+  .matches-body {
+    padding: 1.5rem 1rem;
+  }
+  .pet-card {
+    flex-direction: column;
+  }
+  .pet-card-img {
+    width: 100%;
+  }
+}

@@ -201,13 +201,13 @@ export default function MatchesPage() {
     }
 
     return(
-        <main>
-            <div>
-                <div>
-                    <img></img>
+        <main className="matches-main">
+            <div className="matches-sidebar">
+                <div className="sidebar-brand">
+                    <img className="logo-img"></img>
                     <h2>PetMatch</h2>
                 </div>
-                <div>
+                <div className="sidebar-menu">
                     <Button text={"Matches"} funcion={() => {router.push("/matches")}}></Button>
                     <Button text={"Chats"} funcion={() => {router.push("/chats")}}></Button>
                 </div>
@@ -221,13 +221,15 @@ export default function MatchesPage() {
                     </div>
                     <Popup trigger={<Button text={abierto ? "Volver" : "Cerrar Sesión"}></Button>}>
                         <div>
+                    <Popup trigger={<Button text={abierto ? "Volver" : "Cerrar Sesión"}></Button>}>
+                        <div className="popup-box">
                             <p>¿Estás seguro de que quieres cerrar sesión?</p>
                             <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
                             {errorCierre && (<p>{errorCierre}</p>)}
                         </div>
                     </Popup>
                 </div>
-                <div>
+                <div className="matches-filters">
                     <h4>Filtros</h4>
                     <Select text={"Especie"} change={setEspecie} options={["Perro", "Gato", "Pajaro", "Conejo"]}></Select>
                     <Input type={"text"} text={"Raza"} placeholder={"Ingrese la raza"} change={setRaza}></Input>
