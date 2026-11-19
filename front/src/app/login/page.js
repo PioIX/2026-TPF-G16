@@ -59,7 +59,7 @@ export default function Login() {
             <div className="form-card">
                 <div className="card-header">
                     <img
-                        src="/pets-illustration.png"
+                        src="/mascotas.png"
                         alt="Mascotas"
                         className="header-illustration"
                     />
