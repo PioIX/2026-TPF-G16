@@ -3,6 +3,7 @@ export default function Select({ text, change, options }) {
         <div>
             <label>{text}</label>
             <select onChange={(e) => {change(e.target.value)}}>
+                <option value="">Seleccione una opción</option>
                 {options.map(op => (
                     <option key={op} value={op}>{op}</option>
                 ))}

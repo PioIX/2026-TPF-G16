@@ -3,9 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "npm start",
-    "pio" : "npm run pio",
-    "home": "npm run home"
+    "pio": "nodemon --env-file=.pio.env index.js",
+    "home": "nodemon --env-file=.home.env index.js"
   },
   "dependencies": {
     "body-parser": "^2.4.0",
@@ -15,5 +14,8 @@
     "multer": "^2.5.0",
     "mysql2": "^3.24.6",
     "socket.io": "^4.8.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
