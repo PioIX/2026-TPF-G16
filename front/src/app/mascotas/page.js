@@ -27,9 +27,12 @@ export default function MascotasPage() {
     const [errorRegistro, setErrorRegistro] = useState("");
     const [errorCierre, setErrorCierre] = useState("");
 
+    const [listo, setListo] = useState(false);
+
     const router = useRouter();
 
     const cargarMascotas = () => {
+        console.log("probando")
         fetch('http://localhost:4000/mascotas',
             {
                 credentials: "include"
@@ -79,6 +82,7 @@ export default function MascotasPage() {
     useEffect(() => {
         cargarMascotas();
         cargarCaracteristicas();
+        setListo(true);
     }, []);
 
     const cambiarCaracteristicas = (bool, id_car) => {
@@ -95,7 +99,15 @@ export default function MascotasPage() {
     }
 
     const mascotaNueva = () => {
-        if (nombre.trim() === "" || especie.trim() === "" || raza.trim() === "" || edad === undefined || sexo.trim() === "" || descripcion.trim() === "" || foto === undefined) {
+        if (nombre.trim() === "" || especie.trim() === "" || raza.trim() === "" || !edad || sexo.trim() === "" || descripcion.trim() === "" || !foto) {
+            console.log("nombre  ", nombre)
+            console.log("especie  ", especie)
+            console.log("raza  ", raza)
+            console.log("edad  ", edad)
+            console.log("sexo  ", sexo)
+            console.log("descripcion  ", descripcion)
+            console.log(foto)
+            console.log(carMascota)
             setErrorRegistro("Debes completar todos los campos.");
         } else {
             const datos = new FormData();
@@ -187,7 +199,7 @@ export default function MascotasPage() {
                         <h1>Tus mascotas</h1>
                         <p>Visualiza las mascotas ingresadas</p>
                     </div>
-                    <Popup trigger={<Button text={"Cerrar Sesión"}></Button>}>
+                    <Popup trigger={<button>Cerrar Sesión</button>}>
                         <div>
                             <p>¿Estás seguro de que quieres cerrar sesión?</p>
                             <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
@@ -200,6 +212,7 @@ export default function MascotasPage() {
                     {mascotas.map(pet => (
                         <div key={pet.id_mascota}>
                             <img src={`http://localhost:4000${pet.foto}`} alt="Foto mascota"></img>
+                            {console.log(pet.foto)}
                             <div>
                                 <h3>{pet.nombre}</h3>
                                 <div>
@@ -237,31 +250,33 @@ export default function MascotasPage() {
                     ))}
                 </div>
                 <div>
-                    <Popup trigger={<Button text={"Nueva mascota"}></Button>}>
-                        <div>
-                            <h2>Registrar mascota</h2>
-                            <p>Ingrese todos los campos para registrar a su nueva mascota.</p>
-                        </div>
-                        <div>
-                            <Input type={"text"} text={"Nombre"} placeholder={"Ingrese su nombre"} change={setNombre}></Input>
-                            <Select text={"Especie"} change={setEspecie} options={["Perro", "Gato", "Pajaro", "Conejo"]}></Select>
-                            <Input type={"text"} text={"Raza"} placeholder={"Ingrese su raza/especie"} change={setRaza}></Input>
-                            <Input type={"number"} text={"Edad"} placeholder={"Ingrese su edad"} change={setEdad}></Input>
-                            <Select text={"Sexo"} change={setSexo} options={["F", "M"]}></Select>
-                            <Input type={"text"} text={"Descripción"} placeholder={"Describa a la mascota"} change={setDescripcion}></Input>
-                            <Input type={"file"} text={"Foto"} placeholder={"Ingrese una foto de su amiguito"} change={setFoto}></Input>
+                    {listo && (
+                        <Popup trigger={<Button text={"Nueva mascota"}></Button>}>
                             <div>
-                                <label>Caracteristicas</label>
-                                {caracteristicas.map(car => (
-                                    <div key={car.id_caracteristica}>
-                                        <Checkbox text={car.descripcion} change={cambiarCaracteristicas}></Checkbox>
-                                    </div>
-                                ))}
+                                <h2>Registrar mascota</h2>
+                                <p>Ingrese todos los campos para registrar a su nueva mascota.</p>
                             </div>
-                            <Button text={"Registrar mascota"} funcion={mascotaNueva}></Button>
-                            {errorRegistro && (<p>{errorRegistro}</p>)}
-                        </div>
-                    </Popup>
+                            <div>
+                                <Input type={"text"} text={"Nombre"} placeholder={"Ingrese su nombre"} change={setNombre}></Input>
+                                <Select text={"Especie"} change={setEspecie} options={["Perro", "Gato", "Pajaro", "Conejo"]}></Select>
+                                <Input type={"text"} text={"Raza"} placeholder={"Ingrese su raza/especie"} change={setRaza}></Input>
+                                <Input type={"number"} text={"Edad"} placeholder={"Ingrese su edad"} change={setEdad}></Input>
+                                <Select text={"Sexo"} change={setSexo} options={["F", "M"]}></Select>
+                                <Input type={"text"} text={"Descripción"} placeholder={"Describa a la mascota"} change={setDescripcion}></Input>
+                                <Input type={"file"} text={"Foto"} placeholder={"Ingrese una foto de su amiguito"} change={setFoto}></Input>
+                                <div>
+                                    <label>Caracteristicas</label>
+                                    {caracteristicas.map(car => (
+                                        <div key={car.id_caracteristica}>
+                                            <Checkbox text={car.descripcion} change={cambiarCaracteristicas}></Checkbox>
+                                        </div>
+                                    ))}
+                                </div>
+                                <Button text={"Registrar mascota"} funcion={mascotaNueva}></Button>
+                                {errorRegistro && (<p>{errorRegistro}</p>)}
+                            </div>
+                        </Popup>
+                    )}
                 </div>
             </div>
         </main>

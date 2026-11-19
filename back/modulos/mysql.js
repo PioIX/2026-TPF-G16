@@ -30,7 +30,8 @@ exports.realizarQuery = async function (queryString)
 	}
 	catch(err)
 	{
-		console.log(err);
+		console.log("Error en la consulta MySQL: ", err);
+		throw err;
 	}
 	finally
 	{
