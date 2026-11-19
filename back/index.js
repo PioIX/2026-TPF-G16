@@ -12,7 +12,7 @@ const crypto = require('crypto');
 const app = express();
 const server = http.createServer(app);
 
-var port = process.env.PORT || 4000;
+var port = 4000;
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
@@ -82,7 +82,7 @@ app.post('/login', async function(req, res) {
             } else {
                 req.session.user = id[0].id_usuario;
                 req.session.tipo = "usuario";
-                res.json(id[0].id_usuario);
+                res.json(id[0]);
             }
         } else {
             let id = await realizarQuery(`SELECT id_refugio FROM Refugios WHERE mail = "${req.body.mail}" AND contraseña = "${req.body.password}"`);
@@ -90,8 +90,9 @@ app.post('/login', async function(req, res) {
                 res.json(0)
             } else {
                 req.session.user = id[0].id_refugio;
+                console.log(req.session.user)
                 req.session.tipo = "refugio";
-                res.json(id[0].id_refugio);
+                res.json(id[0]);
             }
         }
     } catch (error) {
@@ -105,7 +106,7 @@ app.post('/registerUser', upload.single("foto"), async function(req, res) {
         console.log(req.body) ;
         let foto = null;
         if (req.file) {
-            foto = "/uploads/" + req.file.filename;
+            foto = `"/uploads/${req.file.filename}"`;
         }
         let existe = await realizarQuery(`SELECT * FROM Usuarios WHERE mail = "${req.body.mail}"`) ;
         if (existe.length > 0) {
@@ -113,12 +114,12 @@ app.post('/registerUser', upload.single("foto"), async function(req, res) {
         } else {
             await realizarQuery(`
                 INSERT INTO Usuarios (nombre, apellido, mail, contraseña, foto) VALUES
-                ("${req.body.nombre}","${req.body.apellido}","${req.body.mail}","${req.body.password}","${foto}");
+                ("${req.body.nombre}","${req.body.apellido}","${req.body.mail}","${req.body.password}",${foto});
             `);
             let id = await realizarQuery(`SELECT LAST_INSERT_ID()`);
             req.session.user = id[0].id_usuario;
             req.session.tipo = "usuario";
-            res.json(id[0].id_usuario);
+            res.json(id[0]);
         }
     } catch (error) {
         console.log(error);
@@ -142,7 +143,8 @@ app.post('/registerRef', upload.single("foto"), async function(req, res) {
             let id = await realizarQuery(`SELECT LAST_INSERT_ID()`);
             req.session.user = id[0].id_refugio;
             req.session.tipo = "refugio";
-            res.json(id[0].id_refugio);
+            res.send(id[0]);
+            
         }
     } catch (error) {
         console.log(error);
@@ -166,8 +168,6 @@ app.get('/cierreSesion', async function(req, res) {
 // cargar mascotas
 app.get('/mascotas', async function(req, res) {
     try {
-        console.log(req.session.tipo)
-        console.log(req.session.user)
         let respuesta;
         if (req.session.tipo === "refugio") {
             respuesta = await realizarQuery(`SELECT * FROM Mascotas WHERE id_refugio = ${req.session.user}`);
@@ -177,7 +177,6 @@ app.get('/mascotas', async function(req, res) {
         res.json(respuesta);
     } catch (error) {
         console.log(error);
-        console.log("no bro")
         res.status(500).json(-1);
     }
 })
@@ -291,10 +290,14 @@ app.post('/registerCar', async function(req, res) {
 // cargar matches
 app.get('/matches', async function(req, res) {
     try {
+        console.log("hola")
+        console.log(req.session.user)
         let respuesta = await realizarQuery(`SELECT * FROM Matches WHERE id_usuario = ${req.session.user}`);
+        console.log("rta")
         res.json(respuesta);
     } catch (error) {
         console.log(error);
+        console.log("oh no")
         res.status(500).json(-1);
     }
 })

@@ -100,14 +100,6 @@ export default function MascotasPage() {
 
     const mascotaNueva = () => {
         if (nombre.trim() === "" || especie.trim() === "" || raza.trim() === "" || !edad || sexo.trim() === "" || descripcion.trim() === "" || !foto) {
-            console.log("nombre  ", nombre)
-            console.log("especie  ", especie)
-            console.log("raza  ", raza)
-            console.log("edad  ", edad)
-            console.log("sexo  ", sexo)
-            console.log("descripcion  ", descripcion)
-            console.log(foto)
-            console.log(carMascota)
             setErrorRegistro("Debes completar todos los campos.");
         } else {
             const datos = new FormData();
@@ -199,13 +191,15 @@ export default function MascotasPage() {
                         <h1>Tus mascotas</h1>
                         <p>Visualiza las mascotas ingresadas</p>
                     </div>
-                    <Popup trigger={<button>Cerrar Sesión</button>}>
-                        <div className="popup-box">
-                            <p>¿Estás seguro de que quieres cerrar sesión?</p>
-                            <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
-                            {errorCierre && (<p className="error-message">{errorCierre}</p>)}
-                        </div>
-                    </Popup>
+                    {listo && (
+                        <Popup trigger={<button>Cerrar Sesión</button>}>
+                            <div className="popup-box">
+                                <p>¿Estás seguro de que quieres cerrar sesión?</p>
+                                <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
+                                {errorCierre && (<p className="error-message">{errorCierre}</p>)}
+                            </div>
+                        </Popup>
+                    )}
                 </div>
                 <div className="mascotas-list-container">
                     <h2>Mascotas</h2>
@@ -268,7 +262,7 @@ export default function MascotasPage() {
                                     <label>Caracteristicas</label>
                                     {caracteristicas.map(car => (
                                         <div key={car.id_caracteristica}>
-                                            <Checkbox text={car.descripcion} change={cambiarCaracteristicas}></Checkbox>
+                                            <Checkbox text={car.descripcion} change={cambiarCaracteristicas} id={car.id_caracteristica}></Checkbox>
                                         </div>
                                     ))}
                                 </div>

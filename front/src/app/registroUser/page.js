@@ -16,11 +16,13 @@ export default function Registro() {
     const router = useRouter();
 
     const registrarse = () => {
+        setError("");
         if (nombre.trim() === "" || apellido.trim() === "" || mail.trim() === "" || password.trim() === "") {
             setError("Debes completar todos los campos para registrarte.")
+        } else if (password.length < 8) {
+            setError("La contraseña debe ser de minimo 8 caracteres.")
         } else {
             const datos = new FormData();
-
             datos.append("nombre", nombre);
             datos.append("apellido", apellido);
             datos.append("mail", mail);
@@ -34,7 +36,7 @@ export default function Registro() {
                 credentials: "include",
                 body: datos
             })
-                .then(response => response.json())
+                .then(x => x.json())
                 .then(data => {
                     if (data === 0){
                         setError("Ya existe una cuenta con este mail, intente denuevo.");
