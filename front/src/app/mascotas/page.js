@@ -181,64 +181,64 @@ export default function MascotasPage() {
     }
 
     return (
-        <main>
-            <div>
-                <div>
-                    <img></img>
+        <main className="mascotas-main">
+            <div className="mascotas-sidebar">
+                <div className="sidebar-brand">
+                    <img className="logo-img"></img>
                     <h2>PetMatch</h2>
                 </div>
-                <div>
+                <div className="sidebar-menu">
                     <Button text={"Mascotas"} funcion={() => {router.push("/mascotas")}}></Button>
                     <Button text={"Chats"} funcion={() => {router.push("/chats")}}></Button>
                 </div>
             </div>
-            <div>
-                <div>
-                    {error && (<p>{error}</p>)}
-                    <div>
+            <div className="mascotas-body">
+                <div className="mascotas-topbar">
+                    {error && (<p className="error-message">{error}</p>)}
+                    <div className="topbar-tittles">
                         <h1>Tus mascotas</h1>
                         <p>Visualiza las mascotas ingresadas</p>
                     </div>
                     <Popup trigger={<button>Cerrar Sesión</button>}>
-                        <div>
+                        <div className="popup-box">
                             <p>¿Estás seguro de que quieres cerrar sesión?</p>
                             <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
-                            {errorCierre && (<p>{errorCierre}</p>)}
+                            {errorCierre && (<p className="error-message">{errorCierre}</p>)}
                         </div>
                     </Popup>
                 </div>
-                <div>
+                <div className="mascotas-list-container">
                     <h2>Mascotas</h2>
                     {mascotas.map(pet => (
-                        <div key={pet.id_mascota}>
+                        <div key={pet.id_mascota} className="pet-list-item-card">
                             <img src={`http://localhost:4000${pet.foto}`} alt="Foto mascota"></img>
                             {console.log(pet.foto)}
-                            <div>
+                            <div className="pets-list-details">
                                 <h3>{pet.nombre}</h3>
                                 <div>
                                     <img></img>
                                     <p>{pet.especie} - {pet.raza}</p>
                                 </div>
-                                <div>
-                                    <div>
+                                <div className="pet-info-stack-list">
+                                    <div className="pet-stat-list">
                                         <img></img>
                                         <p>{pet.edad} años</p>
                                     </div>
                                     {pet.sexo === "F" ? (
-                                        <div>
+                                        <div className="pet-stat-list">
                                             <img></img>
                                             <p>Hembra</p>
                                         </div>
                                     ) : (
-                                        <div>
+                                        <div className="pet-stat-list">
                                             <img></img>
                                             <p>Macho</p>
                                         </div>
                                     )}
-                                    <p>{pet.descripcion}</p>
-                                    <div>
+                                    <p className="pet-list-desc">{pet.descripcion}</p>
+                                    <div className="pet-list-traits">
                                         <h4>Caracteristicas</h4>
-                                        <ul>
+                                        <ul className="traits-list-ul">
                                             {carPorMascota.filter(car => Number(car.id_mascota) === Number(pet.id_mascota)).map(car => (
                                                 <li key={car.id_caracteristica}>{car.descripcion}</li>
                                             ))}
