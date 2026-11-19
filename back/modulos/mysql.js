@@ -13,11 +13,6 @@ const SQL_CONFIGURATION_DATA =
 	port: 3306,
 	charset: 'UTF8_GENERAL_CI'
 }
-console.log("Configuración MySQL:");
-console.log("Host:", SQL_CONFIGURATION_DATA.host);
-console.log("Usuario:", SQL_CONFIGURATION_DATA.user);
-console.log("Base:", SQL_CONFIGURATION_DATA.database);
-console.log("Puerto:", SQL_CONFIGURATION_DATA.port);
 
 /**
  * Realiza una query a la base de datos MySQL indicada en el archivo "mysql.js".
@@ -35,7 +30,8 @@ exports.realizarQuery = async function (queryString)
 	}
 	catch(err)
 	{
-		console.log(err);
+		console.log("Error en la consulta MySQL: ", err);
+		throw err;
 	}
 	finally
 	{
