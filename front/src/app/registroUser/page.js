@@ -20,6 +20,7 @@ export default function Registro() {
             setError("Debes completar todos los campos para registrarte.")
         } else {
             const datos = new FormData();
+            console.log("probando")
 
             datos.append("nombre", nombre);
             datos.append("apellido", apellido);
@@ -36,11 +37,13 @@ export default function Registro() {
             })
                 .then(response => response.json())
                 .then(data => {
+                    console.log("Entro")
                     if (data === 0){
                         setError("Ya existe una cuenta con este mail, intente denuevo.");
                     } else if (data === -1) {
                         setError("Ha ocurrido un error, intente denuevo más tarde.");
                     } else {
+                        console.log("ya entraste")
                         router.replace(`/matches`);
                     }
                 });

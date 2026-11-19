@@ -100,14 +100,6 @@ export default function MascotasPage() {
 
     const mascotaNueva = () => {
         if (nombre.trim() === "" || especie.trim() === "" || raza.trim() === "" || !edad || sexo.trim() === "" || descripcion.trim() === "" || !foto) {
-            console.log("nombre  ", nombre)
-            console.log("especie  ", especie)
-            console.log("raza  ", raza)
-            console.log("edad  ", edad)
-            console.log("sexo  ", sexo)
-            console.log("descripcion  ", descripcion)
-            console.log(foto)
-            console.log(carMascota)
             setErrorRegistro("Debes completar todos los campos.");
         } else {
             const datos = new FormData();

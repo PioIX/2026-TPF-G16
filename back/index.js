@@ -12,7 +12,7 @@ const crypto = require('crypto');
 const app = express();
 const server = http.createServer(app);
 
-var port = process.env.PORT || 4000;
+var port = 4000;
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
@@ -105,19 +105,25 @@ app.post('/registerUser', upload.single("foto"), async function(req, res) {
         console.log(req.body) ;
         let foto = null;
         if (req.file) {
-            foto = "/uploads/" + req.file.filename;
+            foto = `"/uploads/${req.file.filename}"`;
         }
         let existe = await realizarQuery(`SELECT * FROM Usuarios WHERE mail = "${req.body.mail}"`) ;
         if (existe.length > 0) {
             res.json(0);
         } else {
+            console.log(req.body.nombre)
+            console.log(req.body.apellido)
+            console.log(req.body.mail)
+            console.log(req.body.password)
+            console.log(req.body.foto)
             await realizarQuery(`
                 INSERT INTO Usuarios (nombre, apellido, mail, contraseña, foto) VALUES
-                ("${req.body.nombre}","${req.body.apellido}","${req.body.mail}","${req.body.password}","${foto}");
+                ("${req.body.nombre}","${req.body.apellido}","${req.body.mail}","${req.body.password}",${foto});
             `);
             let id = await realizarQuery(`SELECT LAST_INSERT_ID()`);
             req.session.user = id[0].id_usuario;
             req.session.tipo = "usuario";
+            console.log("listo")
             res.json(id[0].id_usuario);
         }
     } catch (error) {
@@ -166,8 +172,6 @@ app.get('/cierreSesion', async function(req, res) {
 // cargar mascotas
 app.get('/mascotas', async function(req, res) {
     try {
-        console.log(req.session.tipo)
-        console.log(req.session.user)
         let respuesta;
         if (req.session.tipo === "refugio") {
             respuesta = await realizarQuery(`SELECT * FROM Mascotas WHERE id_refugio = ${req.session.user}`);
@@ -177,7 +181,6 @@ app.get('/mascotas', async function(req, res) {
         res.json(respuesta);
     } catch (error) {
         console.log(error);
-        console.log("no bro")
         res.status(500).json(-1);
     }
 })
