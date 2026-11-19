@@ -17,8 +17,11 @@ export default function Registro() {
     const router = useRouter();
 
     const registrarse = () => {
+        setError("")
         if (nombre.trim() === "" || mail.trim() === "" || password.trim() === "" || direccion.trim() === "" || telefono === undefined) {
             setError("Debes completar todos los campos para ingresar.");
+        } else if (password.length < 8) {
+            setError("La contraseña debe tener minimo 8 caracteres.")
         } else {
             const datos = new FormData();
 

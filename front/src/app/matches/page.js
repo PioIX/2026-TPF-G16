@@ -3,6 +3,7 @@
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import Select from "@/components/Select";
+import Checkbox from "@/components/Checkbox";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Popup from "reactjs-popup";
@@ -25,7 +26,8 @@ export default function MatchesPage() {
     const [sexo, setSexo] = useState("");
     const [carFiltro, setCarFiltro] = useState([]);
     const [caracteristicas, setCaracteristicas] = useState([]);
-    const [abierto, setAbierto] = useState(false);
+
+    const [listo, setListo] = useState(false);
 
     const router = useRouter();
 
@@ -38,7 +40,7 @@ export default function MatchesPage() {
                 } else {
                     setMascotas(data);
                     cargarCarPorMascota(data);
-                    cargarMascotaRandom(data);
+                    cargarMascotaRandom();
                 }
             })
     }
@@ -49,7 +51,6 @@ export default function MatchesPage() {
             headers: {
                 "Content-Type": "application/json"
             },
-            credentials: "inlcude",
             body: JSON.stringify(datos)
         })
             .then(response => response.json())
@@ -62,9 +63,7 @@ export default function MatchesPage() {
             });
     }
     const cargarCaracteristicas = () => {
-        fetch('http://localhost:4000/caracteristicas', {
-            credentials: "include"
-        })
+        fetch('http://localhost:4000/caracteristicas')
             .then(response => response.json())
             .then(data => {
                 if (data === -1) {
@@ -75,15 +74,15 @@ export default function MatchesPage() {
             })
     }
     const cargarMatches = () => {
-        fetch('http://localhost:4000/matches', {
-            credentials: "include"
-        })
+        console.log("probando")
+        fetch('http://localhost:4000/matches')
             .then(response => response.json())
             .then(data => {
                 if (data === -1) {
                     setError("Ha ocurrido un error, intente denuevo más tarde.");
                 } else {
                     setMatches(data);
+                    console.log("done")
                 }
             })
     }
@@ -91,6 +90,7 @@ export default function MatchesPage() {
         cargarMascotas();
         cargarCaracteristicas();
         cargarMatches();
+        setListo(true);
     }, []);
 
     const cambiarCaracteristicas = (bool, id_car) => {
@@ -120,7 +120,6 @@ export default function MatchesPage() {
             headers: {
                 "Content-Type": "application/json"
             },
-            credentials: "include",
             body: JSON.stringify(datos)
         })
             .then(response => response.json())
@@ -135,7 +134,6 @@ export default function MatchesPage() {
                             headers: {
                                 "Content-Type": "application/json"
                             },
-                            credentials: "include",
                             body: JSON.stringify(info)
                         })
                             .then(res => res.json())
@@ -187,9 +185,7 @@ export default function MatchesPage() {
     }, [matches, especie, raza, edadMax, edadMin, sexo, carFiltro])
 
     const cerrarSesion = () => {
-        fetch('http://localhost:4000/cierreSesion', {
-            credentials: "include"
-        })
+        fetch('http://localhost:4000/cierreSesion')
             .then(response => response.json())
             .then(data => {
                 if (data === 0) {
@@ -219,15 +215,15 @@ export default function MatchesPage() {
                         <h1>Encontrá a tu compañero</h1>
                         <p>Deslizá y likeá para encontrar a tu amigo ideal</p>
                     </div>
-                    <Popup trigger={<Button text={abierto ? "Volver" : "Cerrar Sesión"}></Button>}>
-                        <div>
-                    <Popup trigger={<Button text={abierto ? "Volver" : "Cerrar Sesión"}></Button>}>
-                        <div className="popup-box">
-                            <p>¿Estás seguro de que quieres cerrar sesión?</p>
-                            <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
-                            {errorCierre && (<p>{errorCierre}</p>)}
-                        </div>
-                    </Popup>
+                    {listo && (
+                        <Popup trigger={<button>Cerrar Sesión</button>}>
+                            <div className="popup-box">
+                                <p>¿Estás seguro de que quieres cerrar sesión?</p>
+                                <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
+                                {errorCierre && (<p>{errorCierre}</p>)}
+                            </div>
+                        </Popup>
+                    )}
                 </div>
                 <div className="matches-filters">
                     <h4>Filtros</h4>
@@ -237,13 +233,15 @@ export default function MatchesPage() {
                     <Input type={"number"} text={"Edad mínima"} placeholder={"Ingrese la edad mínima"} change={setEdadMin}></Input>
                     <Select text={"Sexo"} change={setSexo} options={["F", "M"]}></Select>
                     <label>Caracteristicas</label>
-                    <Popup trigger={<Button text={abierto ? "Cerrar" : "Seleccionar..."}></Button>} onOpen={() => setAbierto(true)} onClose={() => setAbierto(false)}>
-                        {caracteristicas.map(car => (
-                            <div key={car.id_caracteristica}>
-                                <Checkbox id={car.id_caracteristica} text={car.descripcion} change={cambiarCaracteristicas}></Checkbox>
-                            </div>
-                        ))}
-                    </Popup>
+                    {listo && (
+                        <Popup trigger={<button>Seleccionar...</button>}>
+                            {caracteristicas.map(car => (
+                                <div key={car.id_caracteristica}>
+                                    <Checkbox id={car.id_caracteristica} text={car.descripcion} change={cambiarCaracteristicas}></Checkbox>
+                                </div>
+                            ))}
+                        </Popup>
+                    )}
                 </div>
                 <div>
                     {mascotaElegida ? (

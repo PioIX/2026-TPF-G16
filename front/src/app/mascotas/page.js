@@ -191,13 +191,15 @@ export default function MascotasPage() {
                         <h1>Tus mascotas</h1>
                         <p>Visualiza las mascotas ingresadas</p>
                     </div>
-                    <Popup trigger={<button>Cerrar Sesión</button>}>
-                        <div>
-                            <p>¿Estás seguro de que quieres cerrar sesión?</p>
-                            <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
-                            {errorCierre && (<p>{errorCierre}</p>)}
-                        </div>
-                    </Popup>
+                    {listo && (
+                        <Popup trigger={<button>Cerrar Sesión</button>}>
+                            <div>
+                                <p>¿Estás seguro de que quieres cerrar sesión?</p>
+                                <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
+                                {errorCierre && (<p>{errorCierre}</p>)}
+                            </div>
+                        </Popup>
+                    )}
                 </div>
                 <div>
                     <h2>Mascotas</h2>
@@ -260,7 +262,7 @@ export default function MascotasPage() {
                                     <label>Caracteristicas</label>
                                     {caracteristicas.map(car => (
                                         <div key={car.id_caracteristica}>
-                                            <Checkbox text={car.descripcion} change={cambiarCaracteristicas}></Checkbox>
+                                            <Checkbox text={car.descripcion} change={cambiarCaracteristicas} id={car.id_caracteristica}></Checkbox>
                                         </div>
                                     ))}
                                 </div>
