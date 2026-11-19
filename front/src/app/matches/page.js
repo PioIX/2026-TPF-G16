@@ -212,20 +212,18 @@ export default function MatchesPage() {
                     <Button text={"Chats"} funcion={() => {router.push("/chats")}}></Button>
                 </div>
             </div>
-            <div>
-                <div>
-                    {error && (<p>{error}</p>)}
-                    <div>
+            <div className="matches-body">
+                <div className="matches-topbar">
+                    {error && (<p className="error-message">{error}</p>)}
+                    <div className="topbar-titles">
                         <h1>Encontrá a tu compañero</h1>
                         <p>Deslizá y likeá para encontrar a tu amigo ideal</p>
                     </div>
                     <Popup trigger={<Button text={abierto ? "Volver" : "Cerrar Sesión"}></Button>}>
-                        <div>
-                    <Popup trigger={<Button text={abierto ? "Volver" : "Cerrar Sesión"}></Button>}>
                         <div className="popup-box">
                             <p>¿Estás seguro de que quieres cerrar sesión?</p>
                             <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
-                            {errorCierre && (<p>{errorCierre}</p>)}
+                            {errorCierre && (<p className="error-message">{errorCierre}</p>)}
                         </div>
                     </Popup>
                 </div>
@@ -239,40 +237,39 @@ export default function MatchesPage() {
                     <label>Caracteristicas</label>
                     <Popup trigger={<Button text={abierto ? "Cerrar" : "Seleccionar..."}></Button>} onOpen={() => setAbierto(true)} onClose={() => setAbierto(false)}>
                         {caracteristicas.map(car => (
-                            <div key={car.id_caracteristica}>
+                            <div key={car.id_caracteristica} className="popup-check-item">
                                 <Checkbox id={car.id_caracteristica} text={car.descripcion} change={cambiarCaracteristicas}></Checkbox>
                             </div>
                         ))}
                     </Popup>
                 </div>
-                <div>
+                <div className="pet-card">
                     {mascotaElegida ? (
-                        <>
-                            <img src={`http://localhost:4000${mascotaElegida.foto}`} alt="Foto mascota"></img>
-                            <div>
+                        <> <img src={`http://localhost:4000${mascotaElegida.foto}`} alt="Foto mascota" className="pet-card-img"></img>
+                            <div className="pet-card-details">
                                 <h3>{mascotaElegida.nombre}</h3>
-                                <div>
+                                <div className="pet-species-row">
                                     <img></img>
                                     <p>{mascotaElegida.especie} - {mascotaElegida.raza}</p>
                                 </div>
-                                <div>
-                                    <div>
+                                <div className="pet-info-stack">
+                                    <div className="pet-stat">
                                         <img></img>
                                         <p>{mascotaElegida.edad} años</p>
                                     </div>
                                     {mascotaElegida.sexo === "F" ? (
-                                        <div>
+                                        <div className="pet-stat">
                                             <img></img>
                                             <p>Hembra</p>
                                         </div>
                                     ) : (
-                                        <div>
+                                        <div className="pet-stat">
                                             <img></img>
                                             <p>Macho</p>
                                         </div>
                                     )}
-                                    <p>{mascotaElegida.descripcion}</p>
-                                    <div>
+                                    <p className="pet-desc">{mascotaElegida.descripcion}</p>
+                                    <div className="pet-traits">
                                         <h4>Caracteristicas</h4>
                                         <ul>
                                             {carPorMascota.filter(car => car.id_mascota === mascotaElegida.id_mascota).map(car => (
@@ -280,8 +277,8 @@ export default function MatchesPage() {
                                             ))}
                                         </ul>
                                     </div>
-                                    <p>{mascotaElegida.nombre_refugio}</p>
-                                    <div>
+                                    <p className="pet-shelter">{mascotaElegida.nombre_refugio}</p>
+                                    <div className="pet-buttons">
                                         <Button text={"Pasar"} funcion={() => guardarMatch(false)}></Button>
                                         <Button text={"Me interesa"} funcion={() => guardarMatch(true)}></Button>
                                     </div>

@@ -50,17 +50,17 @@ export default function Registro() {
     }
 
     return(
-        <main>
-            <div>
-                <div>
-                    <img></img>
-                    <h1>PetMatch</h1>
+        <main className="form-container">
+            <div className="top-header">
+                <div className="logo-box">
+                    <img src="/logo-paws.png" alt="PetMatch Logo" className="logo-img"></img>
+                    <h1 className="logo-title">PetMatch</h1>
                 </div>
                 <Button text={"Volver al inicio"} funcion={() => {router.back()}}></Button>
             </div>
-            <div>
-                <div>
-                    <img></img>
+            <div className="form-card">
+                <div className="card-header">
+                    <img src="/mascotas.png" alt="Mascotas" className="header-illustration"></img>
                     <h2>Registro</h2>
                     <p>¡Gracias por visitar!</p>
                 </div>
