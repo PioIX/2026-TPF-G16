@@ -16,13 +16,16 @@ export default function ChatsPage() {
     const [mensajes, setMensajes] = useState([]);
     const [msj, setMsj] = useState("");
     const [error, setError] = useState("");
+    
+    const [listo, setListo] = useState(false);
 
     const [errorCierre, setErrorCierre] = useState("");
     const { socket, isConnected } = useSocket();
     const router = useRouter();
 
     useEffect(() => {
-        cargarChats()
+        cargarChats();
+        setListo(true);
     }, []);
 
     useEffect(() => {
@@ -151,13 +154,15 @@ export default function ChatsPage() {
                 </div>
             </div>
             <div>
-                <Popup trigger={<Button text={"Cerrar Sesión"}></Button>}>
-                    <div>
-                        <p>¿Estás seguro de que quieres cerrar sesión?</p>
-                        <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
-                        {errorCierre && (<p>{errorCierre}</p>)}
-                    </div>
-                </Popup>
+                {listo && (
+                    <Popup trigger={<button>Cerrar Sesión</button>}>
+                        <div>
+                            <p>¿Estás seguro de que quieres cerrar sesión?</p>
+                            <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
+                            {errorCierre && (<p>{errorCierre}</p>)}
+                        </div>
+                    </Popup>
+                )}
                 <div>
                     <div>
                         <h1>Tus chats</h1>

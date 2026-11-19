@@ -16,29 +16,34 @@ export default function Login() {
     const tipo = searchParams.get("user");
 
     const iniciarSesion = () => {
-        const datos = {user: tipo, mail: mail, password: password};
-        fetch(`http://localhost:4000/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: "include",
-            body: JSON.stringify(datos)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data === 0) {
-                setError("Mail o contraseña incorrectos.")
-            } else if (data === -1) {
-                setError("Ha ocurrido un error, intente denuevo más tarde.");
-            } else {
-                if (tipo === "usuario") {
-                    router.push("/matches");
+        setError("");
+        if (mail.trim() === "" || password.trim() === "") {
+            setError("Debes completar todos los campos.");
+        } else {
+            const datos = {user: tipo, mail: mail, password: password};
+            fetch(`http://localhost:4000/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: "include",
+                body: JSON.stringify(datos)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data === 0) {
+                    setError("Mail o contraseña incorrectos.")
+                } else if (data === -1) {
+                    setError("Ha ocurrido un error, intente denuevo más tarde.");
                 } else {
-                    router.push("/mascotas");
+                    if (tipo === "usuario") {
+                        router.push("/matches");
+                    } else {
+                        router.push("/mascotas");
+                    }
                 }
-            }
-        });
+            });
+        }
     };
 
     return (
