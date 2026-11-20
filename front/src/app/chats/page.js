@@ -8,6 +8,8 @@ import Chat from "@/components/Chat";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import Button from "@/components/Button";
+import "@/main.css";
+import "@/chats.css";
 
 export default function ChatsPage() {
     const [chats, setChats] = useState([]);

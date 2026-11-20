@@ -5,6 +5,7 @@ import Button from "@/components/Button";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import "@/main.css";
+import "@/login.css";
 
 export default function Login() {
     const [mail, setMail] = useState("");

@@ -1,0 +1,199 @@
+.form-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem 2rem 1rem;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.top-header {
+  position: absolute;
+  top: 1.5rem;
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+.top-header button {
+  background: transparent;
+  border: none;
+  color: var(--text-sub);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+}
+
+.top-header button:hover {
+  text-decoration: underline;
+}
+
+.top-header .logo-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.top-header .logo-img {
+  width: 32px;
+  height: 32px;
+}
+
+.logo-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+/* Tarjeta contenedora */
+.form-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 2.25rem 2rem;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
+  margin-top: 2rem;
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.header-illustration {
+  width: 90px;
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 0.25rem 0;
+}
+
+.card-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-sub);
+  margin: 0;
+}
+
+/* Inputs */
+.inputs-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.input-group,
+.inputs-wrapper > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: left;
+}
+
+.input-group h3,
+.inputs-wrapper h3 {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.input-group input,
+.inputs-wrapper input {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 0.875rem;
+  color: var(--text-main);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input-group input:focus,
+.inputs-wrapper input:focus {
+  border-color: var(--btn-primary);
+}
+
+.inputs-wrapper button {
+  width: 100%;
+  background-color: var(--btn-primary);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.75rem;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.inputs-wrapper button:hover {
+  background-color: var(--btn-hover);
+}
+
+/* Separador "o" y Footer */
+.divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin: 1.25rem 0;
+}
+
+.divider-line {
+  flex-grow: 1;
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.divider-dot {
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  color: #c2b5ac;
+}
+
+.footer-account {
+  text-align: center;
+  width: 100%;
+}
+
+.footer-text {
+  font-size: 0.75rem;
+  color: var(--text-sub);
+  margin: 0 0 0.25rem 0;
+}
+
+.footer-account button {
+  background: transparent;
+  border: none;
+  color: var(--btn-primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.footer-account button:hover {
+  text-decoration: underline;
+}

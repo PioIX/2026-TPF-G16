@@ -5,6 +5,7 @@ import Button from "@/components/Button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import "@/main.css";
+import "@/login.css";
 
 export default function Registro() {
     const [nombre, setNombre] = useState("");

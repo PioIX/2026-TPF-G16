@@ -1,0 +1,33 @@
+.chats-main {
+  display: flex;
+  min-height: 100vh;
+  background-color: #FCF9F6;
+  color: #3A2D28;
+}
+
+.chats-sidebar {
+  width: 240px;
+  background-color: #F8EBE8;
+  border-right: 1px solid #EFE4DF;
+  padding: 2rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.chats-menu button:first-child {
+  background-color: transparent !important;
+  color: #6E5D57 !important;
+}
+
+.chats-menu button:last-child {
+  background-color: #EED8D4 !important;
+  color: #3A2D28 !important;
+}
+
+.chats-menu button:hover {
+  background-color: rgba(212, 150, 148, 0.2) !important;
+  color: #3A2D28 !important;
+}
