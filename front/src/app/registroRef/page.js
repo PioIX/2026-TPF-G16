@@ -48,7 +48,7 @@ export default function Registro() {
                     } else if (data === -1) {
                         setError("Ha ocurrido un error, intente denuevo más tarde.");
                     } else {
-                        router.replace(`/mascotas`);
+                        router.replace(`/mascotas?id=${data}`);
                     }
                 });
         }

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSocket } from "@/hooks/useSocket";
 import ChatList from "@/components/ChatList";
 import Chat from "@/components/Chat";
@@ -14,16 +14,17 @@ import "@/chats.css";
 export default function ChatsPage() {
     const [chats, setChats] = useState([]);
     const [chatElegido, setChatElegido] = useState(null);
-    const [usuario, setUsuario] = useState(null);
     const [mensajes, setMensajes] = useState([]);
     const [msj, setMsj] = useState("");
     const [error, setError] = useState("");
     
     const [listo, setListo] = useState(false);
 
-    const [errorCierre, setErrorCierre] = useState("");
     const { socket, isConnected } = useSocket();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const id = searchParams.get("id");
+    const tipo = searchParams.get("tipo");
 
     useEffect(() => {
         cargarChats();
@@ -32,18 +33,14 @@ export default function ChatsPage() {
 
     useEffect(() => {
         if (!socket) return;
-
-        socket.on("userData", (data) => {setUsuario(data);})
         socket.on("newMessage", (data) => {setMensajes(original => [...original, data.message])})
-
         return () => {
-            socket.off("userData");
             socket.off("newMessage");
         }
     }, [socket, isConnected]);
 
     const cargarChats = () => {
-        fetch('http://localhost:4000/chats', {
+        fetch(`http://localhost:4000/chats/${id}/${tipo}`, {
             credentials: "include"
         })
             .then(response => response.json())
@@ -67,7 +64,7 @@ export default function ChatsPage() {
     }
 
     const adoptar = () => {
-        const datos = {id_pet: chatElegido.id_mascota, pet: chatElegido.nombreSecundario, id_usuario: chatElegido.id_usuario, id_chat: chatElegido.id_chat};
+        const datos = {id_ref: id, id_pet: chatElegido.id_mascota, pet: chatElegido.nombreSecundario, id_usuario: chatElegido.id_usuario, id_chat: chatElegido.id_chat};
         fetch(`http://localhost:4000/adoptar`, {
             method: 'PUT',
             headers: {
@@ -106,9 +103,10 @@ export default function ChatsPage() {
             }
         });
     }
+
     const enviarMsj = () => {
         if (msj.trim() !== "" && socket && chatElegido) {
-            socket.emit('sendMessage', msj)
+            socket.emit('sendMessage', {msj: msj, tipo: tipo, id: id})
             setMsj("");
         }
     }
@@ -129,17 +127,7 @@ export default function ChatsPage() {
     }, [chatElegido])
 
     const cerrarSesion = () => {
-        fetch('http://localhost:4000/cierreSesion', {
-            credentials: "include"
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data === 0) {
-                    router.replace('/');
-                } else {
-                    setErrorCierre("Ha ocurrido un error, intente denuevo más tarde.");
-                }
-            });
+        router.replace('/');
     }
 
     return(
@@ -150,8 +138,13 @@ export default function ChatsPage() {
                     <h2>PetMatch</h2>
                 </div>
                 <div className="sidebar-menu chats-menu">
-                    <Button text={"Matches"} funcion={() => {router.push("/matches")}}></Button>
-                    <Button text={"Chats"} funcion={() => {router.push("/chats")}}></Button>
+                    <Button text={"Matches"} funcion={() => {
+                        if (tipo === "usuario") {
+                            router.push(`/matches?id=${id}`)
+                        } else {
+                            router.push(`mascotas?id=${id}`)
+                        }}}></Button>
+                    <Button text={"Chats"} funcion={() => {router.push(`/chats?id=${id}&tipo=${tipo}`)}}></Button>
                 </div>
             </div>
             <div className="chats-body">
@@ -160,7 +153,6 @@ export default function ChatsPage() {
                         <div className="popup-box">
                             <p>¿Estás seguro de que quieres cerrar sesión?</p>
                             <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
-                            {errorCierre && (<p className="error-message">{errorCierre}</p>)}
                         </div>
                     </Popup>
                 )}

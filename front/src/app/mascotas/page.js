@@ -5,7 +5,7 @@ import Button from "@/components/Button";
 import Select from "@/components/Select";
 import Checkbox from "@/components/Checkbox";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import "@/main.css";
@@ -27,15 +27,15 @@ export default function MascotasPage() {
     const [caracteristicas, setCaracteristicas] = useState([]);
     const [error, setError] = useState("");
     const [errorRegistro, setErrorRegistro] = useState("");
-    const [errorCierre, setErrorCierre] = useState("");
 
     const [listo, setListo] = useState(false);
 
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const id = searchParams.get("id");
 
     const cargarMascotas = () => {
-        console.log("probando")
-        fetch('http://localhost:4000/mascotas',
+        fetch(`http://localhost:4000/mascotas/${id}/refugio`,
             {
                 credentials: "include"
             })
@@ -91,11 +91,11 @@ export default function MascotasPage() {
         id_car = Number(id_car);
         if (bool) {
             if (!carMascota.includes(id_car)) {
-                setCarMascota([...carMascota, id_car]);
+                setCarMascota(anterior => [...anterior, id_car]);
             }
         } else {
             if (carMascota.includes(id_car)) {
-                setCarMascota(carMascota.filter(id => id !== id_car));
+                setCarMascota(anterior => anterior.filter(id => id !== id_car));
             }
         }
     }
@@ -114,17 +114,18 @@ export default function MascotasPage() {
         setFoto(null);
     }
     const editar = (id_pet) => {
-        let mascota = mascotas.find(pet => pet.id_mascota === id_pet);
+        let mascota = mascotas.find(pet => Number(pet.id_mascota) === Number(id_pet));
         const datos = new FormData();
-        if (nombre) { datos.append("nombre", nombre) } else { datos.append("nombre", mascota.nombre) }
-        if (especie) { datos.append("especie", especie) } else { datos.append("especie", mascota.especie) }
-        if (raza) { datos.append("raza", raza) } else { datos.append("raza", mascota.raza) }
-        if (edad) { datos.append("edad", edad) } else { datos.append("edad", mascota.edad) }
-        if (sexo) { datos.append("sexo", sexo) } else { datos.append("sexo", mascota.sexo) }
-        if (descripcion) { datos.append("desc", descripcion) } else { datos.append("desc", mascota.descripcion) }
-        if (foto) { datos.append("foto", foto) }
+        if (nombre) {datos.append("nombre", nombre)} else {datos.append("nombre", mascota.nombre)}
+        if (especie) {datos.append("especie", especie)} else {datos.append("especie", mascota.especie)}
+        if (raza) {datos.append("raza", raza)} else {datos.append("raza", mascota.raza)}
+        if (edad) {datos.append("edad", edad)} else {datos.append("edad", mascota.edad)}
+        if (sexo) {datos.append("sexo", sexo)} else {datos.append("sexo", mascota.sexo)}
+        if (descripcion) {datos.append("desc", descripcion)} else {datos.append("desc", mascota.descripcion)}
+        if (foto) {datos.append("foto", foto)} else {datos.append("foto", mascota.foto)}
+        datos.append("id_pet", mascota.id_mascota)
 
-        fetch(`http://localhost:4000/mascotas`, {
+        fetch(`http://localhost:4000/editarMascota`, {
             method: 'PUT',
             credentials: "include",
             body: datos
@@ -153,6 +154,7 @@ export default function MascotasPage() {
             datos.append("sexo", sexo);
             datos.append("desc", descripcion);
             datos.append("foto", foto);
+            datos.append("id_user", id)
 
             fetch('http://localhost:4000/registerPet', {
                 method: 'POST',
@@ -166,7 +168,7 @@ export default function MascotasPage() {
                     } else if (data === -1) {
                         setError("Ha ocurrido un error, intente denuevo más tarde.");
                     } else {
-                        guardarCaracteristicas(data);
+                        guardarCaracteristicas(data.id_mascota);
                     }
                 });
         }
@@ -229,17 +231,7 @@ export default function MascotasPage() {
     }
 
     const cerrarSesion = () => {
-        fetch('http://localhost:4000/cierreSesion', {
-            credentials: "include"
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data === 0) {
-                    router.replace('/');
-                } else {
-                    setErrorCierre("Ha ocurrido un error, intente denuevo más tarde.");
-                }
-            });
+        router.replace('/');
     }
 
     return (
@@ -250,8 +242,8 @@ export default function MascotasPage() {
                     <h2>PetMatch</h2>
                 </div>
                 <div className="sidebar-menu">
-                    <Button text={"Mascotas"} funcion={() => { router.push("/mascotas") }} />
-                    <Button text={"Chats"} funcion={() => { router.push("/chats") }} />
+                    <Button text={"Mascotas"} funcion={() => {router.push(`/mascotas?id=${id}`)}}></Button>
+                    <Button text={"Chats"} funcion={() => {router.push(`/chats?id=${id}&tipo=refugio`)}}></Button>
                 </div>
             </div>
 
@@ -266,8 +258,7 @@ export default function MascotasPage() {
                         <Popup trigger={<button>Cerrar Sesión</button>} modal>
                             <div className="popup-box">
                                 <p>¿Estás seguro de que quieres cerrar sesión?</p>
-                                <Button text={"Confirmar"} funcion={cerrarSesion} />
-                                {errorCierre && (<p className="error-message">{errorCierre}</p>)}
+                                <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
                             </div>
                         </Popup>
                     )}
@@ -332,7 +323,7 @@ export default function MascotasPage() {
                                                             <div className="characteristics-checkbox-grid">
                                                                 {caracteristicas.map(car => (
                                                                     <div key={car.id_caracteristica} className="form-checkbox-item">
-                                                                        <Checkbox text={car.descripcion} change={cambiarCaracteristicas} id={car.id_caracteristica} estaMarcado={carMascota.includes(car.id_caracteristica)} />
+                                                                        <Checkbox text={car.descripcion} change={cambiarCaracteristicas} id={car.id_caracteristica} estaMarcado={carMascota.includes(Number(car.id_caracteristica))} />
                                                                     </div>
                                                                 ))}
                                                             </div>

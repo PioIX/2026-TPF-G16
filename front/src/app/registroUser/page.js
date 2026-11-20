@@ -44,7 +44,7 @@ export default function Registro() {
                     } else if (data === -1) {
                         setError("Ha ocurrido un error, intente denuevo más tarde.");
                     } else {
-                        router.replace(`/matches`);
+                        router.replace(`/matches?id=${data}`);
                     }
                 });
         }
