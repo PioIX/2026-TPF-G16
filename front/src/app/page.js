@@ -3,7 +3,7 @@
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 import "@/main.css";
-
+import "@/inicio.css";
 export default function HomePage() {
   const router = useRouter();
 
