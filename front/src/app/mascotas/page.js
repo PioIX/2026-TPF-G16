@@ -98,6 +98,46 @@ export default function MascotasPage() {
         }
     }
 
+    const inicializarCar = (id_pet) => {
+        let car = carPorMascota.filter(registro => Number(registro.id_mascota) === Number(id_pet));
+        car = car.map(registro => Number(registro.id_caracteristica))
+        setCarMascota(car);
+
+        setNombre("");
+        setEspecie("");
+        setRaza("");
+        setEdad(null);
+        setSexo("");
+        setDescripcion("");
+        setFoto(null);
+    }
+    const editar = (id_pet) => {
+        let mascota = mascotas.find(pet => pet.id_mascota === id_pet);
+        const datos = new FormData();
+        if (nombre) {datos.append("nombre", nombre)} else {datos.append("nombre", mascota.nombre)}
+        if (especie) {datos.append("especie", especie)} else {datos.append("especie", mascota.especie)}
+        if (raza) {datos.append("raza", raza)} else {datos.append("raza", mascota.raza)}
+        if (edad) {datos.append("edad", edad)} else {datos.append("edad", mascota.edad)}
+        if (sexo) {datos.append("sexo", sexo)} else {datos.append("sexo", mascota.sexo)}
+        if (descripcion) {datos.append("desc", descripcion)} else {datos.append("desc", mascota.descripcion)}
+        if (foto) {datos.append("foto", foto)}
+
+        fetch(`http://localhost:4000/mascotas`, {
+            method: 'PUT',
+            credentials: "include",
+            body: datos
+        })
+        .then(response => response.json())
+        .then(data => {
+                    if (data === 0){
+                        setError("Ya tienes registrada una mascota con ese nombre.");
+                    } else if (data === -1) {
+                        setError("Ha ocurrido un error, intente denuevo más tarde.");
+                    } else {
+                        editarCaracteristicas(id_pet);
+                    }
+                });
+    }
     const mascotaNueva = () => {
         if (nombre.trim() === "" || especie.trim() === "" || raza.trim() === "" || !edad || sexo.trim() === "" || descripcion.trim() === "" || !foto) {
             setErrorRegistro("Debes completar todos los campos.");
@@ -128,6 +168,34 @@ export default function MascotasPage() {
                     }
                 });
         }
+    }
+    const editarCaracteristicas = (id_pet) => {
+        const datos = {id_pet: id_pet, car: carMascota};
+        fetch('http://localhost:4000/editarCar', {
+            method: 'PUT',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify(datos)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data === -1) {
+                    setError("Ha ocurrido un error, intente denuevo más tarde.");
+                } else {
+                    setCarMascota([]);
+                    setNombre("");
+                    setEspecie("");
+                    setRaza("");
+                    setEdad(null);
+                    setSexo("");
+                    setDescripcion("");
+                    setFoto(null);
+
+                    cargarMascotas();
+                }
+            });
     }
     const guardarCaracteristicas = (id_pet) => {
         const datos = {id_pet: id_pet, car: carMascota};
@@ -238,6 +306,32 @@ export default function MascotasPage() {
                                             ))}
                                         </ul>
                                     </div>
+                                    {listo && (
+                                        <Popup trigger={<button>Editar</button>} onOpen={() => inicializarCar(pet.id_mascota)}>
+                                            <div>
+                                                <h2>Editar mascota</h2>
+                                                <p>Ingrese todos los campos que desea cambiar.</p>
+                                            </div>
+                                            <div>
+                                                <Input type={"text"} text={"Nombre"} placeholder={"Ingrese su nombre"} change={setNombre}></Input>
+                                                <Select text={"Especie"} change={setEspecie} options={["Perro", "Gato", "Pajaro", "Conejo"]}></Select>
+                                                <Input type={"text"} text={"Raza"} placeholder={"Ingrese su raza/especie"} change={setRaza}></Input>
+                                                <Input type={"number"} text={"Edad"} placeholder={"Ingrese su edad"} change={setEdad}></Input>
+                                                <Select text={"Sexo"} change={setSexo} options={["F", "M"]}></Select>
+                                                <Input type={"text"} text={"Descripción"} placeholder={"Describa a la mascota"} change={setDescripcion}></Input>
+                                                <Input type={"file"} text={"Foto"} placeholder={"Ingrese una foto de su amiguito"} change={setFoto}></Input>
+                                                <div>
+                                                    <label>Caracteristicas</label>
+                                                    {caracteristicas.map(car => (
+                                                        <div key={car.id_caracteristica}>
+                                                            <Checkbox text={car.descripcion} change={cambiarCaracteristicas} id={car.id_caracteristica} estaMarcado={carMascota.includes(car.id_caracteristica)}></Checkbox>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                <Button text={"Editar mascota"} funcion={() => editar(pet.id_mascota)}></Button>
+                                            </div>
+                                        </Popup>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -245,7 +339,7 @@ export default function MascotasPage() {
                 </div>
                 <div>
                     {listo && (
-                        <Popup trigger={<Button text={"Nueva mascota"}></Button>}>
+                        <Popup trigger={<button>Nueva mascota</button>}>
                             <div>
                                 <h2>Registrar mascota</h2>
                                 <p>Ingrese todos los campos para registrar a su nueva mascota.</p>

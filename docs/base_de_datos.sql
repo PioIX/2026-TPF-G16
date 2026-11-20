@@ -48,9 +48,11 @@ FOREIGN KEY (id_caracteristica) REFERENCES Caracteristicas(id_caracteristica)
 );
 
 CREATE TABLE IF NOT EXISTS Matches (
+id_match int auto_increment unique not null,
 id_usuario int,
 id_mascota int,
 es_match bool,
+PRIMARY KEY (id_match),
 FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario),
 FOREIGN KEY (id_mascota) REFERENCES Mascotas(id_mascota)
 );

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import useSocket from "@/hooks/useSocket";
+import { useSocket } from "@/hooks/useSocket";
 import ChatList from "@/components/ChatList";
 import Chat from "@/components/Chat";
 import Popup from "reactjs-popup";
@@ -32,7 +32,7 @@ export default function ChatsPage() {
         if (!socket) return;
 
         socket.on("userData", (data) => {setUsuario(data);})
-        socket.on("newMessage", (data) => {setMensajes([...mensajes, data])})
+        socket.on("newMessage", (data) => {setMensajes(original => [...original, data.message])})
 
         return () => {
             socket.off("userData");
@@ -108,7 +108,6 @@ export default function ChatsPage() {
         if (msj.trim() !== "" && socket && chatElegido) {
             socket.emit('sendMessage', msj)
             setMsj("");
-            setMensajes([...mensajes, msj])
         }
     }
 
@@ -172,7 +171,7 @@ export default function ChatsPage() {
                     </div>
                     <div>
                         {error && (<p>{error}</p>)}
-                        {chatElegido && (
+                        {chatElegido && usuario && (
                             <>
                                 {usuario.type === "refugio" ? (
                                     <div>
