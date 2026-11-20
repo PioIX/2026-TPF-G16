@@ -1,0 +1,439 @@
+.mascotas-main {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-main);
+}
+
+/* --- Barra Lateral Izquierda --- */
+.mascotas-sidebar {
+  width: 240px;
+  background-color: #FAF3EE;
+  border-right: 1px solid var(--border-color);
+  padding: 2rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.mascotas-sidebar .sidebar-menu button:first-child,
+.nav-item.active button {
+  background-color: #F4E6E1;
+  color: var(--text-main);
+}
+
+/* --- Contenido Principal Derecho --- */
+.mascotas-body {
+  flex: 1;
+  padding: 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  box-sizing: border-box;
+  max-width: 1200px;
+}
+
+.mascotas-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.topbar-titles h1,
+.topbar-tittles h1 {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0 0 0.35rem 0;
+}
+
+.topbar-titles p,
+.topbar-tittles p {
+  font-size: 0.92rem;
+  color: var(--text-sub);
+  margin: 0;
+}
+
+/* Botones "Cerrar Sesión" y "Nueva mascota" */
+.mascotas-topbar > button,
+.add-pet-container > button {
+  background-color: var(--btn-primary);
+  color: #ffffff;
+  border: none !important;
+  outline: none;
+  padding: 0.75rem 1.75rem;
+  border-radius: 50px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 4px 12px rgba(217, 130, 130, 0.25);
+}
+
+.mascotas-topbar > button:hover,
+.add-pet-container > button:hover {
+  background-color: var(--btn-hover);
+  transform: translateY(-1px);
+}
+
+.add-pet-container {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Lista y Tarjetas */
+.mascotas-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.mascotas-list-container > h2 {
+  font-size: 1.25rem;
+  color: var(--text-main);
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.pet-list-item-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 1.5rem;
+  display: flex;
+  gap: 1.5rem;
+  box-shadow: 0 4px 12px rgba(58, 45, 40, 0.03);
+  box-sizing: border-box;
+  transition: box-shadow 0.2s ease;
+}
+
+.pet-list-item-card:hover {
+  box-shadow: 0 6px 16px rgba(58, 45, 40, 0.06);
+}
+
+.pet-list-img,
+.pet-list-item-card > img {
+  width: 200px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.pet-list-details,
+.pets-list-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pet-list-header h3,
+.pets-list-details h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.pet-species-row-list {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--text-sub);
+}
+
+.pet-species-row-list p,
+.pet-stat-list p {
+  margin: 0;
+}
+
+.pet-species-row-list img:not([src]),
+.pet-stat-list img:not([src]) {
+  display: none;
+}
+
+.pet-info-stack-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  align-items: center;
+}
+
+.pet-stat-list {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-sub);
+}
+
+.pet-list-desc {
+  width: 100%;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-sub);
+  margin: 0.5rem 0;
+}
+
+.pet-list-traits {
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.pet-list-traits h4 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 0.5rem 0;
+}
+
+.traits-list-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.trait-badge-list,
+.traits-list-ul li {
+  background-color: #F7ECE6;
+  color: var(--text-main);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 50px;
+}
+
+.btn-editar-mascota {
+  margin-top: 0.5rem;
+  background-color: #FAF3EE;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 1.25rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-editar-mascota:hover {
+  background-color: var(--btn-primary);
+  color: #ffffff;
+  border-color: var(--btn-primary);
+}
+
+/* Modal de Formulario Nueva y Editar Mascota */
+.modal-pet-form {
+  padding: 2.5rem 2rem;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+  width: 500px;
+  box-sizing: border-box;
+}
+
+.close-modal {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  background: transparent !important;
+  border: none !important;
+  font-size: 1.5rem;
+  color: var(--text-sub) !important;
+  cursor: pointer;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.form-header h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0 0 0.5rem 0;
+}
+
+.form-header p {
+  font-size: 0.9rem;
+  color: var(--text-sub);
+  margin: 0;
+}
+
+.form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-body > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.form-body > div > h3,
+.form-body > div > p,
+.form-body > div > label,
+.form-body > div > span {
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  color: var(--text-main) !important;
+  margin: 0 !important;
+  display: block;
+  text-align: left;
+}
+
+.form-body input[type="text"],
+.form-body input[type="number"],
+.form-body select {
+  width: 100% !important;
+  height: 44px;
+  padding: 0.65rem 1rem !important;
+  border-radius: 12px !important;
+  border: 1.5px solid var(--border-color) !important;
+  background-color: #FFFFFF !important;
+  color: var(--text-main) !important;
+  font-size: 0.9rem !important;
+  font-weight: 500;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-body input[type="text"]::placeholder,
+.form-body input[type="number"]::placeholder {
+  color: #A89B95;
+  font-weight: 400;
+}
+
+.form-body input[type="text"]:focus,
+.form-body input[type="number"]:focus,
+.form-body select:focus {
+  border-color: var(--btn-primary) !important;
+  box-shadow: 0 0 0 3px rgba(217, 130, 130, 0.18);
+}
+
+.form-body input[type="file"] {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 12px;
+  border: 1.5px dashed var(--border-color);
+  background-color: #FFFFFF;
+  color: var(--text-sub);
+  font-size: 0.85rem;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.form-body input[type="file"]::file-selector-button {
+  background-color: #F7ECE6;
+  color: var(--text-main);
+  border: none;
+  padding: 0.45rem 1rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-right: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.form-body input[type="file"]::file-selector-button:hover {
+  background-color: #EEDAD1;
+}
+
+.characteristics-form-group > label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.characteristics-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  background-color: var(--bg-main);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.form-checkbox-item {
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.form-checkbox-item label {
+  margin: 0;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.form-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.form-actions button {
+  width: 100%;
+  background-color: var(--btn-primary);
+  color: #ffffff;
+  border: none !important;
+  padding: 0.75rem 1.4rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.form-actions button:hover {
+  background-color: var(--btn-hover);
+}
+
+@media (max-width: 900px) {
+  .mascotas-main {
+    flex-direction: column;
+  }
+  .mascotas-sidebar {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1rem;
+  }
+  .sidebar-menu {
+    flex-direction: row;
+  }
+  .mascotas-body {
+    padding: 1.5rem;
+  }
+  .pet-list-item-card {
+    flex-direction: column;
+  }
+  .pet-list-img,
+  .pet-list-item-card > img {
+    width: 100%;
+    height: 200px;
+  }
+  .modal-pet-form {
+    width: 95%;
+    padding: 2rem 1rem;
+  }
+}

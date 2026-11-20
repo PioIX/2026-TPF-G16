@@ -8,6 +8,8 @@ import Chat from "@/components/Chat";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import Button from "@/components/Button";
+import "@/main.css";
+import "@/chats.css";
 
 export default function ChatsPage() {
     const [chats, setChats] = useState([]);
@@ -172,6 +174,7 @@ export default function ChatsPage() {
                     <div className="chat-conversation-column">
                         {error && (<p className="error-message">{error}</p>)}
                         {chatElegido && usuario && (
+                            <>
                                 {usuario.type === "refugio" ? (
                                     <div className="chat-actions-bar">
                                         <Button text={"Marcar como adoptado"} funcion={adoptar}></Button>

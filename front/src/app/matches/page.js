@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import "@/main.css";
+import "@/matches.css";
 
 export default function MatchesPage() {
     const [mascotas, setMascotas] = useState([]);
