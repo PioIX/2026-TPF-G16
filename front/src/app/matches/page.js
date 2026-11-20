@@ -32,8 +32,16 @@ export default function MatchesPage() {
 
     const router = useRouter();
 
+    useEffect(() => {
+        cargarMascotas();
+        cargarCaracteristicas();
+        cargarMatches();
+        setListo(true);
+    }, []);
     const cargarMascotas = () => {
-        fetch('http://localhost:4000/mascotas')
+        fetch('http://localhost:4000/mascotas', {
+            credentials: "include"
+        })
             .then(response => response.json())
             .then(data => {
                 if (data === -1) {
@@ -41,7 +49,6 @@ export default function MatchesPage() {
                 } else {
                     setMascotas(data);
                     cargarCarPorMascota(data);
-                    cargarMascotaRandom();
                 }
             })
     }
@@ -52,6 +59,7 @@ export default function MatchesPage() {
             headers: {
                 "Content-Type": "application/json"
             },
+            credentials: "include",
             body: JSON.stringify(datos)
         })
             .then(response => response.json())
@@ -64,7 +72,9 @@ export default function MatchesPage() {
             });
     }
     const cargarCaracteristicas = () => {
-        fetch('http://localhost:4000/caracteristicas')
+        fetch('http://localhost:4000/caracteristicas', {
+            credentials: "include"
+        })
             .then(response => response.json())
             .then(data => {
                 if (data === -1) {
@@ -75,24 +85,18 @@ export default function MatchesPage() {
             })
     }
     const cargarMatches = () => {
-        console.log("probando")
-        fetch('http://localhost:4000/matches')
+        fetch('http://localhost:4000/matches', {
+            credentials: "include"
+        })
             .then(response => response.json())
             .then(data => {
                 if (data === -1) {
                     setError("Ha ocurrido un error, intente denuevo más tarde.");
                 } else {
                     setMatches(data);
-                    console.log("done")
                 }
             })
     }
-    useEffect(() => {
-        cargarMascotas();
-        cargarCaracteristicas();
-        cargarMatches();
-        setListo(true);
-    }, []);
 
     const cambiarCaracteristicas = (bool, id_car) => {
         id_car = Number(id_car);
@@ -106,14 +110,6 @@ export default function MatchesPage() {
             }
         }
     }
-    const cargarMascotaRandom = () => {
-        if (mascotasFiltradas.length === 0) {
-            setMascotaElegida(null);
-        } else {
-            let indice = Math.floor(Math.random() * mascotasFiltradas.length);
-            setMascotaElegida(mascotasFiltradas[indice]);
-        }
-    }
     const guardarMatch = (bool) => {
         let datos = {id_pet: mascotaElegida.id_mascota, match: bool};
         fetch('http://localhost:4000/registerMatch', {
@@ -121,6 +117,7 @@ export default function MatchesPage() {
             headers: {
                 "Content-Type": "application/json"
             },
+            credentials: "include",
             body: JSON.stringify(datos)
         })
             .then(response => response.json())
@@ -129,20 +126,19 @@ export default function MatchesPage() {
                     setError("Ha ocurrido un error, intente denuevo más tarde.");
                 } else {
                     if (bool === true) {
-                        let info = {id_refugio: mascotaElegida.id_refugio, id_pet: mascotaElegida.id_mascota};
+                        let info = {id_refugio: mascotaElegida.id_refugio, id_pet: mascotaElegida.id_mascota, nom_refugio: mascotaElegida.nombre_refugio, nom_mascota: mascotaElegida.nombre};
                         fetch('http://localhost:4000/newChat', {
                             method: 'POST',
                             headers: {
                                 "Content-Type": "application/json"
                             },
+                            credentials: "include",
                             body: JSON.stringify(info)
                         })
                             .then(res => res.json())
                             .then(rta => {
                                 if (rta === -1) {
                                     setError("Ha ocurrido un error, intente denuevo más tarde.");
-                                } else {
-                                    cargarMatches();
                                 }
                             })
                     }
@@ -152,41 +148,49 @@ export default function MatchesPage() {
     }
 
     useEffect(() => {
-        setMascotasFiltradas(mascotas.filter(pet => pet.estado === "Disponible"));
+        if (mascotasFiltradas.length === 0) {
+            setMascotaElegida(null);
+        } else if(!mascotasFiltradas.includes(mascotaElegida)) {
+            let indice = Math.floor(Math.random() * mascotasFiltradas.length);
+            setMascotaElegida(mascotasFiltradas[indice]);
+        }
+    }, [mascotasFiltradas, mascotaElegida])
+    useEffect(() => {
+        let filtradas = mascotas.filter(pet => pet.estado === "Disponible")
         if (matches) {
-            setMascotasFiltradas(mascotas.filter(pet => 
+            filtradas = (filtradas.filter(pet => 
                 matches.every(match => match.id_mascota !== pet.id_mascota)
             ))
         }
         if (especie) {
-            setMascotasFiltradas(mascotas.filter(pet => pet.especie === especie));
+            filtradas = filtradas.filter(pet => pet.especie === especie);
         }
         if (raza) {
-            setMascotasFiltradas(mascotasFiltradas.filter(pet => pet.raza === raza));
+            filtradas = filtradas.filter(pet => pet.raza === raza);
         }
         if (edadMax) {
-          setMascotasFiltradas(mascotasFiltradas.filter(pet => pet.edad <= Number(edadMax)));  
+            filtradas = filtradas.filter(pet => pet.edad <= Number(edadMax));  
         }
         if (edadMin) {
-            setMascotasFiltradas(mascotasFiltradas.filter(pet => pet.edad >= Number(edadMin)));
+            filtradas = filtradas.filter(pet => pet.edad >= Number(edadMin));
         }
         if (sexo) {
-            setMascotasFiltradas(mascotasFiltradas.filter(pet => pet.sexo === sexo));
+            filtradas = filtradas.filter(pet => pet.sexo === sexo);
         }
         if (carFiltro) {
-            setMascotasFiltradas(mascotasFiltradas.filter(pet => 
+            filtradas = filtradas.filter(pet => 
                 carFiltro.every((id_car) =>
                     carPorMascota.some((car) => car.id_mascota === pet.id_mascota && car.id_caracteristica === id_car)
                 )
-            ));
+            );
         }
-        if (!mascotasFiltradas.includes(mascotaElegida)) {
-            cargarMascotaRandom();
-        };
-    }, [matches, especie, raza, edadMax, edadMin, sexo, carFiltro])
+        setMascotasFiltradas(filtradas);
+    }, [matches, especie, raza, edadMax, edadMin, sexo, carFiltro, mascotas])
 
     const cerrarSesion = () => {
-        fetch('http://localhost:4000/cierreSesion')
+        fetch('http://localhost:4000/cierreSesion', {
+            credentials: "include"
+        })
             .then(response => response.json())
             .then(data => {
                 if (data === 0) {
@@ -210,8 +214,8 @@ export default function MatchesPage() {
                 </div>
             </div>
             <div className="matches-body">
+                {error && (<p className="error-message">{error}</p>)}
                 <div className="matches-topbar">
-                    {error && (<p className="error-message">{error}</p>)}
                     <div className="topbar-titles">
                         <h1>Encontrá a tu compañero</h1>
                         <p>Deslizá y likeá para encontrar a tu amigo ideal</p>
