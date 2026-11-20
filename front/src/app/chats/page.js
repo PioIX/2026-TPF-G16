@@ -141,40 +141,39 @@ export default function ChatsPage() {
     }
 
     return(
-        <main>
-            <div>
-                <div>
-                    <img></img>
+        <main className="chats-main">
+            <div className="chats-sidebar">
+                <div className="sidebar-brand">
+                    <img className="logo-img"></img>
                     <h2>PetMatch</h2>
                 </div>
-                <div>
+                <div className="sidebar-menu chats-menu">
                     <Button text={"Matches"} funcion={() => {router.push("/matches")}}></Button>
                     <Button text={"Chats"} funcion={() => {router.push("/chats")}}></Button>
                 </div>
             </div>
-            <div>
+            <div className="chats-body">
                 {listo && (
-                    <Popup trigger={<button>Cerrar Sesión</button>}>
-                        <div>
+                    <Popup trigger={<button className="btn-cerrar-sesion">Cerrar Sesión</button>}>
+                        <div className="popup-box">
                             <p>¿Estás seguro de que quieres cerrar sesión?</p>
                             <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
-                            {errorCierre && (<p>{errorCierre}</p>)}
+                            {errorCierre && (<p className="error-message">{errorCierre}</p>)}
                         </div>
                     </Popup>
                 )}
-                <div>
-                    <div>
+                <div className="chats-workspace">
+                    <div className="chats-list-column">
                         <h1>Tus chats</h1>
                         {chats.map(chat => (
                             <ChatList key={chat.id_chat} chat={chat} funcion={selectChat}></ChatList>
                         ))}
                     </div>
-                    <div>
-                        {error && (<p>{error}</p>)}
+                    <div className="chat-conversation-column">
+                        {error && (<p className="error-message">{error}</p>)}
                         {chatElegido && usuario && (
-                            <>
                                 {usuario.type === "refugio" ? (
-                                    <div>
+                                    <div className="chat-actions-bar">
                                         <Button text={"Marcar como adoptado"} funcion={adoptar}></Button>
                                         <Button text={"Eliminar chat"} funcion={eliminar}></Button>
                                     </div>

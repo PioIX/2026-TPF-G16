@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
+import "@/main.css";
 
 export default function MatchesPage() {
     const [mascotas, setMascotas] = useState([]);
@@ -204,7 +205,7 @@ export default function MatchesPage() {
         <main className="matches-main">
             <div className="matches-sidebar">
                 <div className="sidebar-brand">
-                    <img className="logo-img"></img>
+                    <img src="\logo-paws.png" className="logo-img"></img>
                     <h2>PetMatch</h2>
                 </div>
                 <div className="sidebar-menu">

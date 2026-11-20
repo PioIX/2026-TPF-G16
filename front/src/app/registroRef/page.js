@@ -64,10 +64,10 @@ export default function Registro() {
             <div className="form-card">
                 <div className="card-header">
                     <img src="/mascotas.png" alt="Mascotas" className="header-illustration"></img>
-                    <h2>Registro</h2>
-                    <p>¡Gracias por visitar!</p>
+                    <h2 className="card-title">Registro</h2>
+                    <p className="card-subtitle">¡Gracias por visitar!</p>
                 </div>
-                <div>
+                <div className="inputs-wrapper">
                     <Input type={"text"} text={"Nombre"} placeholder={"Ingrese el nombre del refugio"} change={setNombre}></Input>
                     <Input type={"email"} text={"Mail"} placeholder={"ejemplo@gmail.com"} change={setMail}></Input>
                     <Input type={"password"} text={"Contraseña"} placeholder={"Ingrese su contraseña"} change={setPassword}></Input>
@@ -77,8 +77,8 @@ export default function Registro() {
                     <Button text={"Registrarse"} funcion={registrarse}></Button>
                     {error && (<p>{error}</p>)}
                 </div>
-                <div>
-                    <p>¿Ya tenés una cuenta?</p>
+                <div className="footer-account">
+                    <p className="footer-text">¿Ya tenés una cuenta?</p>
                     <Button text={"Iniciar sesión aquí"} funcion={() => {router.push("/login?user=refugio")}}></Button>
                 </div>
             </div>

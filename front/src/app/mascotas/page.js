@@ -244,7 +244,7 @@ export default function MascotasPage() {
         <main className="mascotas-main">
             <div className="mascotas-sidebar">
                 <div className="sidebar-brand">
-                    <img className="logo-img"></img>
+                    <img className="logo-img" src="/logo-paws.png"></img>
                     <h2>PetMatch</h2>
                 </div>
                 <div className="sidebar-menu">
