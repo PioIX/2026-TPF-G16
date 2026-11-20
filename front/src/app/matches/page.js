@@ -5,7 +5,7 @@ import Input from "@/components/Input";
 import Select from "@/components/Select";
 import Checkbox from "@/components/Checkbox";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import "@/main.css";
@@ -18,8 +18,6 @@ export default function MatchesPage() {
     const [matches, setMatches] = useState([]);
     const [error, setError] = useState("");
 
-    const [errorCierre, setErrorCierre] = useState("");
-
     const [especie, setEspecie] = useState("");
     const [raza, setRaza] = useState("");
     const [edadMax, setEdadMax] = useState(null);
@@ -31,6 +29,8 @@ export default function MatchesPage() {
     const [listo, setListo] = useState(false);
 
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const id = searchParams.get("id")
 
     useEffect(() => {
         cargarMascotas();
@@ -39,7 +39,7 @@ export default function MatchesPage() {
         setListo(true);
     }, []);
     const cargarMascotas = () => {
-        fetch('http://localhost:4000/mascotas', {
+        fetch(`http://localhost:4000/mascotas/${id}/usuario`, {
             credentials: "include"
         })
             .then(response => response.json())
@@ -85,7 +85,7 @@ export default function MatchesPage() {
             })
     }
     const cargarMatches = () => {
-        fetch('http://localhost:4000/matches', {
+        fetch(`http://localhost:4000/matches/${id}`, {
             credentials: "include"
         })
             .then(response => response.json())
@@ -111,7 +111,7 @@ export default function MatchesPage() {
         }
     }
     const guardarMatch = (bool) => {
-        let datos = {id_pet: mascotaElegida.id_mascota, match: bool};
+        let datos = {id_pet: mascotaElegida.id_mascota, match: bool, id_user: id};
         fetch('http://localhost:4000/registerMatch', {
             method: 'POST',
             headers: {
@@ -126,7 +126,7 @@ export default function MatchesPage() {
                     setError("Ha ocurrido un error, intente denuevo más tarde.");
                 } else {
                     if (bool === true) {
-                        let info = {id_refugio: mascotaElegida.id_refugio, id_pet: mascotaElegida.id_mascota, nom_refugio: mascotaElegida.nombre_refugio, nom_mascota: mascotaElegida.nombre};
+                        let info = {id_user: id, id_refugio: mascotaElegida.id_refugio, id_pet: mascotaElegida.id_mascota, nom_refugio: mascotaElegida.nombre_refugio, nom_mascota: mascotaElegida.nombre};
                         fetch('http://localhost:4000/newChat', {
                             method: 'POST',
                             headers: {
@@ -155,6 +155,7 @@ export default function MatchesPage() {
             setMascotaElegida(mascotasFiltradas[indice]);
         }
     }, [mascotasFiltradas, mascotaElegida])
+
     useEffect(() => {
         let filtradas = mascotas.filter(pet => pet.estado === "Disponible")
         if (matches) {
@@ -188,17 +189,7 @@ export default function MatchesPage() {
     }, [matches, especie, raza, edadMax, edadMin, sexo, carFiltro, mascotas])
 
     const cerrarSesion = () => {
-        fetch('http://localhost:4000/cierreSesion', {
-            credentials: "include"
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data === 0) {
-                    router.replace('/');
-                } else {
-                    setErrorCierre("Ha ocurrido un error, intente denuevo más tarde.");
-                }
-            });
+        router.replace('/');
     }
 
     return(
@@ -209,8 +200,8 @@ export default function MatchesPage() {
                     <h2>PetMatch</h2>
                 </div>
                 <div className="sidebar-menu">
-                    <Button text={"Matches"} funcion={() => {router.push("/matches")}}></Button>
-                    <Button text={"Chats"} funcion={() => {router.push("/chats")}}></Button>
+                    <Button text={"Matches"} funcion={() => {router.push(`/matches?id=${id}`)}}></Button>
+                    <Button text={"Chats"} funcion={() => {router.push(`/chats?id=${id}&tipo=usuario`)}}></Button>
                 </div>
             </div>
             <div className="matches-body">
@@ -225,7 +216,6 @@ export default function MatchesPage() {
                             <div className="popup-box">
                                 <p>¿Estás seguro de que quieres cerrar sesión?</p>
                                 <Button text={"Confirmar"} funcion={cerrarSesion}></Button>
-                                {errorCierre && (<p className="error-message">{errorCierre}</p>)}
                             </div>
                         </Popup>
                     )}

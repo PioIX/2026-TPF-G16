@@ -37,9 +37,9 @@ export default function Login() {
                     setError("Ha ocurrido un error, intente denuevo más tarde.");
                 } else {
                     if (tipo === "usuario") {
-                        router.push("/matches");
+                        router.push(`/matches?id=${data.id_usuario}`);
                     } else {
-                        router.push("/mascotas");
+                        router.push(`/mascotas?id=${data.id_refugio}`);
                     }
                 }
             });
