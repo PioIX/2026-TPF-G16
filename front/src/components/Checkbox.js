@@ -1,11 +1,7 @@
-export default function Checkbox({ id, text, change }) {
-    const manejarCambio = (e) => {
-        change(e.target.checked, id);
-    }
-
+export default function Checkbox({ id, text, change, estaMarcado }) {
     return(
         <label>
-            <input type="checkbox" onChange={(e) => {manejarCambio(e)}}></input>
+            <input type="checkbox" onChange={(e) => {(e) => change(e.target.checked, id)}} checked={estaMarcado}></input>
             {text}
         </label>
     )
